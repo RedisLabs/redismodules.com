@@ -1,5 +1,5 @@
 body {
-    padding-top: 70px;
+    padding-top: 60px;
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     color: #545454;
@@ -24,6 +24,40 @@ p {
 
 .logo {
     width: 100px;
+}
+
+.redisefont {
+    color: #b62311;
+    position: relative;
+    line-height: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    display: inline-block;
+    letter-spacing: -.075em;
+}
+
+.redisefont::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    margin-left: -34px;
+    width: 68px;
+    height: 25px;
+}
+
+.redisefont sup {
+    transform: rotate(-15deg);
+    display: inline-block;
+    font-size: 50%;
+    top: -.9em;
+}
+
+.heading {
+    background-size: cover; 
+    padding: 100px 0;
+    margin-bottom: 20px;
 }
 
 .module {

@@ -128,13 +128,14 @@
     </div>
   {% endblock %}
 
-  <h1>Redis Modules Hub</h1>
+  <div class="row heading" style="background: url({{url_for('.static', filename='images/heading-bg.jpg')}});">
+    <h1>Redis Modules Hub</h1>
+  </div>
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-6 col-md-offset-2">
+      <div class="col-md-8 col-md-offset-2">
         <p>
-          <img src="{{url_for('.static', filename='images/redis-modules-logo.png')}}" width="131" height="81" style="float: left; margin-right: 20px;"/>
           Redis Modules are add-ons to Redis which extend Redis to cover most of the popular use cases for any industry. They seamlessly plug into ​Redis, processed in-memory and provide Redis’ simplicity, super high performance, scalability and high availability.
         </p>
         <p>
@@ -143,11 +144,11 @@
         <p>
           All modules in this hub (open source or commercial) are certified by Redis Labs for use with open source Redis​ ​​and ​Redis Enterprise.​
         </p>
-      </div>
-      <div class="col-md-2">
-        <button type="button" class="btn btn-default btn-lg" style="color: #ffffff; background-color: #b62411">
-           <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit your module
-        </button>
+        <p class="text-center">
+          <button type="button" class="btn btn-default btn-lg" style="color: #ffffff; background-color: #b62411">
+            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit your module
+          </button>
+        </p>
       </div>
     </div>
   </div>
@@ -169,7 +170,12 @@
 
             <h2>{{ module['name'] }}</h2>
             <p class="lead">{{ module['description']|safe }}</p>
-            <p>License: {{ module['license'] }}</p>
+            <p>
+              License: {{ module['license'] }}
+              {% if 'enterprise' in module and module['enterprise'] %}
+                and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
+              {% endif %}
+            </p>
 
             {% if 'repository' in module %}
               <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
