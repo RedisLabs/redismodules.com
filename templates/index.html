@@ -125,7 +125,7 @@
 
   <h1>Redis Modules Hub</h1>
 
-  <div class="fluid-container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-6 col-md-offset-2">
         <p>
@@ -147,7 +147,7 @@
   </div>
 
   {% block content %}
-    <div class="fluid-container">
+    <div class="container-fluid">
       {% for module in modules %}
         <div class="row">
           <div class="col-md-8 col-md-offset-2 module">
@@ -163,6 +163,13 @@
         <em>Impossible - no modules found.</em>
       {% endfor %}
     </div>
+
+    <footer class="footer">
+      <div class="container-fluid text-center copyright">
+        <span>&copy; 2017 Redis Labs, Inc. All rights reserved.</span>
+      </div>
+    </footer>
+
   {% endblock %}
 
 {% endblock %}
