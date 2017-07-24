@@ -10,6 +10,10 @@
 {% block styles %}
   {{super()}}
   <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+  <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.css')}}">
+  <!--[if lt IE 9]>
+    <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.ie.css')}}">
+  <![endif]-->
 {% endblock %}
 
 {% block body %}
@@ -152,10 +156,13 @@
       {% for module in modules %}
         <div class="row">
           <div class="col-md-8 col-md-offset-2 module">
+            {% if module['certified'] %}
+              <a class="github-fork-ribbon right-top" href="#" data-ribbon="Certified module" title="Certified module">Certified module</a>
+            {% endif %}            
             <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
             <h2>{{ module['name'] }}</h2>
             <p class="lead">{{ module['description']|safe }}</p>
-            <p>License: {{ module['license'] }}</a></p>
+            <p>License: {{ module['license'] }}</p>
             <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
             <p>Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
           </div>

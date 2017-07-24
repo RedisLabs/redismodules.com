@@ -19,6 +19,7 @@ p {
     background-color: #b62311;
     padding: .5rem 1rem;
     display: block;
+    z-index: 99999;
 }
 
 .logo {
