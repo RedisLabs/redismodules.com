@@ -155,8 +155,8 @@
             <h2>{{ module['name'] }}</h2>
             <p class="lead">{{ module['description']|safe }}</p>
             <p>License: {{ module['license'] }}</a></p>
-            <p>Repository: <a href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
-            <p>Documentation: <a href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
+            <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
+            <p>Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
           </div>
         </div>
       {% else %}
