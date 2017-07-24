@@ -18,7 +18,8 @@
       },
       {
         "type": "homepage",
-        "id": "Redis Labs"
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
       }
     ]
   },
@@ -42,7 +43,8 @@
       },
       {
         "type": "homepage",
-        "id": "Redis Labs"
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
       }
     ]
   },
@@ -66,7 +68,8 @@
       },
       {
         "type": "homepage",
-        "id": "Redis Labs"
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
       }
     ]
   },
@@ -90,7 +93,8 @@
       },
       {
         "type": "homepage",
-        "id": "Redis Labs"
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
       }
     ]
   },
@@ -114,7 +118,236 @@
       },
       {
         "type": "homepage",
-        "id": "Redis Labs"
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
+      }
+    ]
+  },
+
+  {
+    "name": "neural-redis",
+    "license" : "BSD",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/antirez/neural-redis.git"
+    },
+    "description": "Online trainable neural networks as Redis data types",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "antirez"
+      }
+    ]
+  },
+
+  {
+    "name": "redis-cell",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/brandur/redis-cell"
+    },
+    "description": "A Redis module that provides rate limiting in Redis as a single command",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "brandur"
+      }
+    ]
+  },
+
+  {
+    "name": "redis-tdigest",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/usmanm/redis-tdigest"
+    },
+    "description": "t-digest data structure which can be used for accurate online accumulation of rank-based statistics such as quantiles and cumulative distribution at a point",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "usmanm"
+      }
+    ]
+  },
+
+  {
+    "name": "redis-timerseries",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/danni-m/redis-timeseries"
+    },
+    "description": "Time-series data structure for Redis",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "danni-m"
+      }
+    ]
+  },
+
+  {
+    "name": "Cthulhu",
+    "license" : "BSD",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/sklivvz/cthulhu"
+    },
+    "description": "Extend Redis with JavaScript modules",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "sklivvz"
+      }
+    ]
+  },
+
+  {
+    "name": "Redis Snowflake",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/erans/redissnowflake"
+    },
+    "description": "Twitter's Snowflake based ID generation as a Redis module",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "erans"
+      }
+    ]
+  },
+
+
+  {
+    "name": "redis-roaring",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/aviggiano/redis-roaring"
+    },
+    "description": "Uses the CRoaring library to implement roaring bitmap commands for Redis",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "aviggiano"
+      }
+    ]
+  },
+
+  {
+    "name": "Session Gate",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/f0rmiga/sessiongate"
+    },
+    "description": "A Redis module that provides session management",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "f0rmiga"
+      }
+    ]
+  },
+
+  {
+    "name": "ReDe",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/TamarLabs/ReDe"
+    },
+    "description": "Low Latancy timed queues (Dehydrators) as Redis data types",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "daTokenizer"
+      }
+    ]
+  },
+
+  {
+    "name": "commentDis",
+    "license" : "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/TamarLabs/commentDis"
+    },
+    "description": "Add comment syntax to your redis-cli scripts",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "daTokenizer"
+      }
+    ]
+  },
+
+
+  {
+    "name": "topk",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/topk"
+    },
+    "description": "An almost deterministic top k elements counter",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "itamarhaber"
+      },
+      {
+        "type": "homepage",
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
+      }
+    ]
+  },
+
+  {
+    "name": "countminsketch",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/countminsketch"
+    },
+    "description": "An apporximate frequency counter",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "itamarhaber"
+      },
+      {
+        "type": "homepage",
+        "id": "Redis Labs",
+        "url": "https://redislabs.com"
       }
     ]
   }

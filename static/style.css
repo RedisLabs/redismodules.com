@@ -26,6 +26,11 @@ p {
     width: 100px;
 }
 
+.btn-submit {
+    color: #ffffff; 
+    background-color: #b62411;
+}
+
 .redisefont {
     color: #b62311;
     position: relative;
