@@ -1,0 +1,112 @@
+[
+  {
+    "name": "RediSearch",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/RediSearch.git"
+    },
+    "documentation": "https://redisearch.io",
+    "description": "Search engine over Redis",
+    "icon": "redisearch-icon.png",
+    "authors": [
+      {
+        "type": "github",
+        "id": "dvirsky"
+      },
+      {
+        "type": "github",
+        "id": "RedisLabs"
+      }
+    ]
+  },
+
+  {
+    "name": "Redis-ML",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/redis-ml.git"
+    },
+    "documentation": "https://redisml.io",
+    "description": "Machine Learning Model Server",
+    "icon": "redis-ml-icon.png",
+    "authors": [
+      {
+        "type": "github",
+        "id": "shaynativ"
+      },
+      {
+        "type": "github",
+        "id": "RedisLabs"
+      }
+    ]
+  },
+
+  {
+    "name": "Redis Graph",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/swilly22/redis-module-graph.git"
+    },
+    "documentation": "https://redisgraph.io",
+    "description": "A graph database with a Cypher-based querying language",
+    "icon": "redis-graph-icon.png",
+    "authors": [
+      {
+        "type": "github",
+        "id": "swilly22"
+      },
+      {
+        "type": "github",
+        "id": "RedisLabs"
+      }
+    ]
+  },
+
+  {
+    "name": "ReJSON",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/ReJSON.git"
+    },
+    "documentation": "https://rejson.io",
+    "description": "A JSON data type for Redis",
+    "icon": "rejson-icon.png",
+    "authors": [
+      {
+        "type": "github",
+        "id": "itamarhaber"
+      },
+      {
+        "type": "github",
+        "id": "RedisLabs"
+      }
+    ]
+  },
+
+  {
+    "name": "rebloom",
+    "license" : "AGPL",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/RedisLabsModules/rebloom.git"
+    },
+    "documentation": "https://rebloom.io",
+    "description": "Scalable Bloom filters",
+    "icon": "rebloom-icon.png",
+    "authors": [
+      {
+        "type": "github",
+        "id": "mnunberg"
+      },
+      {
+        "type": "github",
+        "id": "RedisLabs"
+      }
+    ]
+  }
+
+]
