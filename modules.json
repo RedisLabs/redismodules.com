@@ -17,8 +17,8 @@
         "id": "dvirsky"
       },
       {
-        "type": "github",
-        "id": "RedisLabs"
+        "type": "homepage",
+        "id": "Redis Labs"
       }
     ]
   },
@@ -41,8 +41,8 @@
         "id": "shaynativ"
       },
       {
-        "type": "github",
-        "id": "RedisLabs"
+        "type": "homepage",
+        "id": "Redis Labs"
       }
     ]
   },
@@ -52,7 +52,7 @@
     "license" : "AGPL",
     "repository": {
       "type": "git",
-      "url": "https://github.com/swilly22/redis-module-graph.git"
+      "url": "https://github.com/RedisLabsModules/redis-module-graph.git"
     },
     "documentation": "https://redisgraph.io",
     "description": "A graph database with a Cypher-based querying language",
@@ -65,8 +65,8 @@
         "id": "swilly22"
       },
       {
-        "type": "github",
-        "id": "RedisLabs"
+        "type": "homepage",
+        "id": "Redis Labs"
       }
     ]
   },
@@ -89,8 +89,8 @@
         "id": "itamarhaber"
       },
       {
-        "type": "github",
-        "id": "RedisLabs"
+        "type": "homepage",
+        "id": "Redis Labs"
       }
     ]
   },
@@ -113,8 +113,8 @@
         "id": "mnunberg"
       },
       {
-        "type": "github",
-        "id": "RedisLabs"
+        "type": "homepage",
+        "id": "Redis Labs"
       }
     ]
   }

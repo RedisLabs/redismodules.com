@@ -10,6 +10,7 @@
 {% block styles %}
   {{super()}}
   <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+  <link rel="stylesheet" href="{{url_for('.static', filename='font-awesome/css/font-awesome.min.css')}}">
   <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.css')}}">
   <!--[if lt IE 9]>
     <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.ie.css')}}">
@@ -145,7 +146,7 @@
       </div>
       <div class="col-md-2">
         <button type="button" class="btn btn-default btn-lg" style="color: #ffffff; background-color: #b62411">
-           <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit Your Module
+           <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit your module
         </button>
       </div>
     </div>
@@ -156,15 +157,42 @@
       {% for module in modules %}
         <div class="row">
           <div class="col-md-8 col-md-offset-2 module">
-            {% if module['certified'] %}
+            {% if 'certified' in module and module['certified'] %}
               <a class="github-fork-ribbon right-top" href="#" data-ribbon="Certified module" title="Certified module">Certified module</a>
-            {% endif %}            
-            <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
+            {% endif %}
+
+            {% if 'icon' in module %}
+              <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
+            {% else %}
+              <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
+            {% endif %}
+
             <h2>{{ module['name'] }}</h2>
             <p class="lead">{{ module['description']|safe }}</p>
             <p>License: {{ module['license'] }}</p>
-            <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
-            <p>Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
+
+            {% if 'repository' in module %}
+              <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
+            {% endif %}
+
+            {% if 'documentation' in module %}
+              <p>Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
+            {% endif %}
+
+            {% if 'authors' in module %}
+              <p>
+                Authors:
+                {% for author in module['authors'] %}
+                  {% if author['type'] == 'github' %}
+                    &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
+                  {% elif author['type'] == 'homepage' %}
+                    &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
+                  {% else %}
+                    &nbsp;{{ author['id'] }}@{{ author['type'] }}
+                  {% endif %}
+                {% endfor %}
+              </p>
+            {% endif %}            
           </div>
         </div>
       {% else %}
