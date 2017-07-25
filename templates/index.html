@@ -7,10 +7,10 @@
 
 {% block title %}Redis Modules Hub{% endblock %}
 
-{% block styles %}
+{% block styles -%}
   {{super()}}
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
-  <link rel="stylesheet" href="{{url_for('.static', filename='font-awesome/css/font-awesome.min.css')}}">
   <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.css')}}">
   <!--[if lt IE 9]>
     <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.ie.css')}}">
