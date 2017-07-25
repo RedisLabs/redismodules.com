@@ -58,7 +58,7 @@ def loadModulesCatalog():
     logger.info('Modules catalog loading finished!')
 
 modules = None
-loadCatalog()
+loadModulesCatalog()
 
 app = Flask(__name__)
 app.config.from_object(Config())
