@@ -31,12 +31,6 @@ class Config(object):
 
     SCHEDULER_API_ENABLED = True
 
-# Load modules catalog
-logger.info('Loading modules catalog... ')
-with open('modules.json') as fp:
-    modules = json.load(fp)
-logger.info('Modules catalog loading finished!')
-
 # Populates modules catalog with GitHub repositories stats
 def getGitHubReposStats():
     # github.enable_console_debug_logging()
@@ -55,6 +49,17 @@ def getGitHubReposStats():
             # last_modified = datetime.today() - last_modified
             # mr['last_modified'] = last_modified.days
 
+# Load modules catalog
+def loadModulesCatalog():
+    logger.info('Loading modules catalog... ')
+    global modules
+    with open('modules.json') as fp:
+        modules = json.load(fp)
+    logger.info('Modules catalog loading finished!')
+
+modules = None
+loadCatalog()
+
 app = Flask(__name__)
 app.config.from_object(Config())
 
@@ -68,5 +73,5 @@ scheduler.start()
 def homepage():
     return render_template('index.html', modules=modules)
 
-if __name__ == 'app' or __name__ == '__main__':
+if __name__ == '__main__':
     app.run()
