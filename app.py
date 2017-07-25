@@ -45,9 +45,9 @@ def getGitHubReposStats():
             gr = g.get_repo(mr['name'])
             mr['stargazers_count'] = gr.stargazers_count
             mr['forks_count'] = gr.forks_count
-            # last_modified = gr.pushed_at
-            # last_modified = datetime.today() - last_modified
-            # mr['last_modified'] = last_modified.days
+            last_modified = gr.pushed_at
+            last_modified = datetime.today() - last_modified
+            mr['last_modified'] = last_modified.days
 
 # Load modules catalog
 def loadModulesCatalog():
