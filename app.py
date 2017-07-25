@@ -2,53 +2,71 @@ import os
 import sys
 import json
 import github
+import logging
 from datetime import datetime
-from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 from flask_bootstrap import Bootstrap
+from flask_apscheduler import APScheduler
 
-scheduler = BackgroundScheduler()
-app = Flask(__name__)
-Bootstrap(app)
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s] [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
+class Config(object):
+    JOBS = [
+        {
+            'id': 'startupstats',
+            'func': 'app:getGitHubReposStats',
+            'trigger': None
+        },
+
+        {
+            'id': 'periodicstats',
+            'func': 'app:getGitHubReposStats',
+            'trigger': 'interval',
+            'hours': 4
+        }
+    ]
+
+    SCHEDULER_API_ENABLED = True
 
 # Load modules catalog
-sys.stdout.write('Loading modules catalog... ')
+logger.info('Loading modules catalog... ')
 with open('modules.json') as fp:
     modules = json.load(fp)
-sys.stdout.write('finished!\n')
-sys.stdout.flush()
+logger.info('Modules catalog loading finished!')
 
 # Populates modules catalog with GitHub repositories stats
-@scheduler.scheduled_job('interval', max_instances=1, hours=4)
 def getGitHubReposStats():
     # github.enable_console_debug_logging()
     g = github.Github('d885b41760b9026320eed0c7086b085c7608afe5')
-    sys.stdout.write('Fetching GitHub repositories stats...\n')
-    sys.stdout.flush()
     for module in modules:
         if 'repository' in module and \
             'type' in module['repository'] and \
             module['repository']['type'] == 'github' and \
             'name' in module['repository']:
             mr = module['repository']
-            sys.stdout.write('Fetching stats for {}...'.format(mr['name']))
+            logger.info('Fetching stats for {}...'.format(mr['name']))
             gr = g.get_repo(mr['name'])
             mr['stargazers_count'] = gr.stargazers_count
             mr['forks_count'] = gr.forks_count
             # last_modified = gr.pushed_at
             # last_modified = datetime.today() - last_modified
             # mr['last_modified'] = last_modified.days
-            sys.stdout.write('done!\n')
-            sys.stdout.flush()
+
+app = Flask(__name__)
+app.config.from_object(Config())
+
+Bootstrap(app)
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 @app.route('/')
 def homepage():
     return render_template('index.html', modules=modules)
 
 if __name__ == 'app' or __name__ == '__main__':
-    sys.stdout.write('Starting app')
-    sys.stdout.flush()
-    scheduler.add_job(getGitHubReposStats)  # run immediately once    
-    scheduler.start()
     app.run()
