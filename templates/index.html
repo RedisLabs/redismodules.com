@@ -144,7 +144,7 @@
           Modules can be created by anyone. The Module Hub includes modules created by Redis Labs as well as by others.
         </p>
         <p id="certified-module">
-          Modules displaying the "Certified module" ribbon are certified by Redis Labs to be compatible, both with the open source as well as the enterprise versions of Redis.
+          Modules displaying the "Certified module" ribbon are certified by Redis Labs to be compatible both with the open source as well as the enterprise versions of Redis.
         </p>
         <p class="text-center">
           <button type="button" class="btn btn-default btn-lg btn-submit" data-toggle="modal" data-target="#modalSubmit">
@@ -200,7 +200,24 @@
             </p>
 
             {% if 'repository' in module %}
-              <p>Repository: <a target="_blank" href="{{ module['repository']['url'] }}">{{ module['repository']['url'] }}</a></p>
+              {% if module['repository']['type'] == 'github' %}
+                <p>Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
+                  {% if 'stargazers_count' in module['repository'] or 'stargazers_count' in module['repository'] or 'last_modified' in module['repository'] %}
+                  |
+                  {% endif %}
+                  {% if 'stargazers_count' in module['repository'] %}
+                    {{ module['repository']['stargazers_count'] }} <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                  {% endif %}
+                  {% if 'forks_count' in module['repository'] %}
+                    {{ module['repository']['forks_count'] }} <i class="fa fa-code-fork" aria-hidden="true"></i>
+                  {% endif %}
+                  {% if 'last_modified' in module['repository'] %}
+                    lastest commit {{ module['repository']['last_modified'] }} days ago
+                  {% endif %}
+                </p>
+              {% else %}
+                <p><mark>Repository type unknown</mark></p>
+              {% endif %}
             {% endif %}
 
             {% if 'documentation' in module %}

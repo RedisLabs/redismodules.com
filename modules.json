@@ -3,8 +3,8 @@
     "name": "RediSearch",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/RediSearch.git"
+      "type": "github",
+      "name": "RedisLabsModules/RediSearch"
     },
     "documentation": "https://redisearch.io",
     "description": "Search engine over Redis",
@@ -28,8 +28,8 @@
     "name": "Redis-ML",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/redis-ml.git"
+      "type": "github",
+      "name": "RedisLabsModules/redis-ml"
     },
     "documentation": "https://redisml.io",
     "description": "Machine Learning Model Server",
@@ -53,11 +53,11 @@
     "name": "Redis Graph",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/redis-module-graph.git"
+      "type": "github",
+      "name": "RedisLabsModules/redis-graph"
     },
     "documentation": "https://redisgraph.io",
-    "description": "A graph database with a Cypher-based querying language",
+    "description": "A graph database with an Open Cypher-based querying language",
     "icon": "redis-graph-icon.png",
     "certified": true,
     "enterprise": true,
@@ -78,8 +78,8 @@
     "name": "ReJSON",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/ReJSON.git"
+      "type": "github",
+      "name": "RedisLabsModules/ReJSON"
     },
     "documentation": "https://rejson.io",
     "description": "A JSON data type for Redis",
@@ -103,8 +103,8 @@
     "name": "rebloom",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/rebloom.git"
+      "type": "github",
+      "name": "RedisLabsModules/rebloom"
     },
     "documentation": "https://rebloom.io",
     "description": "Scalable Bloom filters",
@@ -128,8 +128,8 @@
     "name": "neural-redis",
     "license" : "BSD",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/antirez/neural-redis.git"
+      "type": "github",
+      "name": "antirez/neural-redis"
     },
     "description": "Online trainable neural networks as Redis data types",
     "certified": false,
@@ -146,10 +146,11 @@
     "name": "redis-cell",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/brandur/redis-cell"
+      "type": "github",
+      "name": "brandur/redis-cell"
     },
     "description": "A Redis module that provides rate limiting in Redis as a single command",
+    "icon": "redis-cell-icon.png",
     "certified": false,
     "enterprise": false,
     "authors": [
@@ -164,10 +165,11 @@
     "name": "redis-tdigest",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/usmanm/redis-tdigest"
+      "type": "github",
+      "name": "usmanm/redis-tdigest"
     },
     "description": "t-digest data structure which can be used for accurate online accumulation of rank-based statistics such as quantiles and cumulative distribution at a point",
+    "icon": "tdigest-icon.png",
     "certified": false,
     "enterprise": false,
     "authors": [
@@ -182,8 +184,8 @@
     "name": "redis-timerseries",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/danni-m/redis-timeseries"
+      "type": "github",
+      "name": "danni-m/redis-timeseries"
     },
     "description": "Time-series data structure for Redis",
     "certified": false,
@@ -200,8 +202,8 @@
     "name": "Cthulhu",
     "license" : "BSD",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/sklivvz/cthulhu"
+      "type": "github",
+      "name": "sklivvz/cthulhu"
     },
     "description": "Extend Redis with JavaScript modules",
     "certified": false,
@@ -218,8 +220,8 @@
     "name": "Redis Snowflake",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/erans/redissnowflake"
+      "type": "github",
+      "name": "erans/redissnowflake"
     },
     "description": "Twitter's Snowflake based ID generation as a Redis module",
     "certified": false,
@@ -237,8 +239,8 @@
     "name": "redis-roaring",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/aviggiano/redis-roaring"
+      "type": "github",
+      "name": "aviggiano/redis-roaring"
     },
     "description": "Uses the CRoaring library to implement roaring bitmap commands for Redis",
     "certified": false,
@@ -255,8 +257,8 @@
     "name": "Session Gate",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/f0rmiga/sessiongate"
+      "type": "github",
+      "name": "f0rmiga/sessiongate"
     },
     "description": "A Redis module that provides session management",
     "certified": false,
@@ -273,8 +275,8 @@
     "name": "ReDe",
     "license" : "MIT",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/TamarLabs/ReDe"
+      "type": "github",
+      "name": "TamarLabs/ReDe"
     },
     "description": "Low Latancy timed queues (Dehydrators) as Redis data types",
     "certified": false,
@@ -288,32 +290,14 @@
   },
 
   {
-    "name": "commentDis",
-    "license" : "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/TamarLabs/commentDis"
-    },
-    "description": "Add comment syntax to your redis-cli scripts",
-    "certified": false,
-    "enterprise": false,
-    "authors": [
-      {
-        "type": "github",
-        "id": "daTokenizer"
-      }
-    ]
-  },
-
-
-  {
     "name": "topk",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/topk"
+      "type": "github",
+      "name": "RedisLabsModules/topk"
     },
     "description": "An almost deterministic top k elements counter",
+    "icon": "topk-icon.png",
     "certified": false,
     "enterprise": false,
     "authors": [
@@ -333,10 +317,11 @@
     "name": "countminsketch",
     "license" : "AGPL",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/RedisLabsModules/countminsketch"
+      "type": "github",
+      "name": "RedisLabsModules/countminsketch"
     },
     "description": "An apporximate frequency counter",
+    "icon": "countminsketch-icon.png",
     "certified": false,
     "enterprise": false,
     "authors": [
