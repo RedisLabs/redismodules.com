@@ -224,6 +224,7 @@
       "name": "sklivvz/cthulhu"
     },
     "description": "Extend Redis with JavaScript modules",
+    "icon": "cthulhu-icon.png",
     "certified": false,
     "enterprise": false,
     "authors": [
