@@ -199,6 +199,24 @@
   },
 
   {
+    "name": "redis-rating",
+    "license" : "MIT",
+    "repository": {
+      "type": "github",
+      "name": "poga/redis-rating"
+    },
+    "description": "A Redis module that helps you calculate the real rating from positive/negative rating feedback",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+      {
+        "type": "github",
+        "id": "poga"
+      }
+    ]
+  },
+
+  {
     "name": "redis-cuckoofilter",
     "license" : "MIT",
     "repository": {
