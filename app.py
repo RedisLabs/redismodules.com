@@ -34,7 +34,7 @@ class Config(object):
 # Populates modules catalog with GitHub repositories stats
 def getGitHubReposStats():
     # github.enable_console_debug_logging()
-    g = github.Github('d885b41760b9026320eed0c7086b085c7608afe5')
+    g = github.Github(os.environ['GITHUB_TOKEN'])
     for module in modules:
         if 'repository' in module and \
             'type' in module['repository'] and \
