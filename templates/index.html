@@ -272,7 +272,7 @@
                       {% if author['type'] == 'github' %}
                         &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
                       {% elif author['type'] == 'homepage' %}
-                        &nbsp;<a target="_blank" href="https://github.com/{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
+                        &nbsp;<a target="_blank" href="{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
                       {% else %}
                         &nbsp;{{ author['id'] }}@{{ author['type'] }}
                       {% endif %}
