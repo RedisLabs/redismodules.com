@@ -166,7 +166,7 @@
         </div>
         <div class="modal-body">
           <p>
-            Generally, modules include their own documentation that explains how to use them.
+            Generally, modules have their own documentation that explains how to use them.
             To start using most open source modules with open source Redis, follow these steps:
             <ol>
               <li>Clone or download the source code from the module's repository</li>
@@ -196,7 +196,20 @@
           <h4 class="modal-title" id="modalSubmitLabel">Submit your module</h4>
         </div>
         <div class="modal-body">
-          TODO: get details, send notification somewhere
+          <form>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter email">
+              <span class="help-block">Your email address will only be used for contacting you</span>  
+            </div>
+            <div class="form-group">
+              <label for="repo_url">Module repository</label>
+              <div class="input-group">
+                <span class="input-group-addon" id="repo_url_addon">https://github.com/</span>
+                <input type="text" class="form-control" id="repo_url" placeholder="user/repository" aria-describedby="repo_url_addon">
+              </div>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
