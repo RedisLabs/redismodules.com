@@ -9,12 +9,10 @@
 
 {% block styles -%}
   {{super()}}
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
-  <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.css')}}">
-  <!--[if lt IE 9]>
-    <link rel="stylesheet" href="{{url_for('.static', filename='gh-fork-ribbon.ie.css')}}">
-  <![endif]-->
 {% endblock %}
 
 {% block body %}
@@ -134,29 +132,29 @@
   </div>
 
   <!-- Hub intro text -->
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <p>
-          Redis Modules are add-ons to Redis which extend Redis to cover most of the popular use cases for any industry. They seamlessly plug into ​Redis, processed in-memory and provide Redis’ simplicity, super high performance, scalability and high availability.
-        </p>
-        <p>
-          Modules can be created by anyone. The Module Hub includes modules created by Redis Labs as well as by others.
-        </p>
-        <p id="certified-module">
-          Modules displaying the "Certified module" ribbon are certified by Redis Labs to be compatible both with the open source as well as the enterprise versions of Redis.
-        </p>
-        <p class="text-center">
-          <button type="button" class="btn btn-default btn-lg btn-oss" data-toggle="modal" data-target="#modalQuickstart">
-            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Modules quickstart
-          </button>
-          <button type="button" class="btn btn-default btn-lg btn-submit" data-toggle="modal" data-target="#modalSubmit">
-            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit a module
-          </button>
-        </p>
-      </div>
-    </div>
-  </div>
+      <p>
+        Redis Modules are add-ons to Redis which extend Redis to cover most of the popular use cases for any industry. They seamlessly plug into ​Redis, processed in-memory and provide Redis’ simplicity, super high performance, scalability and high availability.
+      </p>
+      <p>
+        Modules can be created by anyone. The Module Hub includes modules created by Redis Labs as well as by others.
+      </p>
+      <p id="certified-module">
+        Modules displaying the "Certified module" icon <span class="octicon octicon-verified module-certified" aria-hidden="true"></span> are certified by Redis Labs to be compatible both with the open source as well as the enterprise versions of Redis.
+      </p>
+      <p>
+        <a href="#" data-toggle="modal" data-target="#modalQuickstart">
+          <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Modules quickstart
+        </a>
+      </p>
+      <p class="text-center">
+        <button type="button" class="btn btn-default btn-lg btn-submit" data-toggle="modal" data-target="#modalSubmit">
+          Submit a module
+        </button>
+      </p>
+    </div> <!-- row -->
+  </div> <!-- container-fluid -->
 
   <!-- Quickstart modal dialog -->
   <div class="modal fade" id="modalQuickstart" tabindex="-1" role="dialog" aria-labelledby="modalQuickstartLabel" style="top: 60px;">
@@ -179,7 +177,7 @@
           </p>
           <p>
             Modules that are included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a> only need to be activated for a database to be used.
-            Refer to the <a target="_blank" href="https://redislabs.com/resources/documentation/"><span class="redisefont">redis<sup>e</sup></span></a>  documentation</a> for more details. 
+            Refer to the <a target="_blank" href="https://redislabs.com/resources/documentation/"><span class="redisefont">redis<sup>e</sup></span> documentation</a> for more details. 
           </p>
         </div>
         <div class="modal-footer">
@@ -210,74 +208,116 @@
 
   <!-- MODULES! MODULES! MODULES! -->
   {% block content %}
-    <div class="container-fluid">
+    <div class="container">
       {% for module in modules %}
-        <div class="row">
-          <div class="col-md-8 col-md-offset-2 module">
-            {% if 'certified' in module and module['certified'] %}
-              <a class="github-fork-ribbon right-top" href="#" data-ribbon="Certified module" title="Certified module">Certified module</a>
-            {% endif %}
+        <div class="row row-module">
+          <div class="flex-container">
+            <div class="flex-info-container">
+              <div>
+                {% if 'icon' in module %}
+                  <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
+                {% else %}
+                  <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
+                {% endif %}
+              </div> <!-- module-icon -->
 
-            {% if 'icon' in module %}
-              <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
-            {% else %}
-              <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
-            {% endif %}
-
-            <h2>{{ module['name'] }}</h2>
-            <p class="lead">{{ module['description']|safe }}</p>
-            <p>
-              License: {{ module['license'] }}
-              {% if 'enterprise' in module and module['enterprise'] %}
-                and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
-              {% endif %}
-            </p>
-
-            {% if 'repository' in module %}
-              {% if module['repository']['type'] == 'github' %}
-                <p>Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
-                  {% if 'stargazers_count' in module['repository'] or 'stargazers_count' in module['repository'] or 'last_modified' in module['repository'] %}
-                  |
+              <div class="module-info">
+                <h2 class="module-name">
+                  {{ module['name'] }}
+                  {% if 'certified' in module and module['certified'] %}
+                    <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
                   {% endif %}
-                  {% if 'stargazers_count' in module['repository'] %}
-                    {{ module['repository']['stargazers_count'] }} <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                  {% endif %}
-                  {% if 'forks_count' in module['repository'] %}
-                    {{ module['repository']['forks_count'] }} <i class="fa fa-code-fork" aria-hidden="true"></i>
-                  {% endif %}
-                  {% if 'last_modified' in module['repository'] %}
-                    latest commit {{ module['repository']['last_modified'] }} days ago
+                </h2>
+                <p class="module-desc">{{ module['description']|safe }}</p>
+                <p class="module-line">
+                  License: {{ module['license'] }}
+                  {% if 'enterprise' in module and module['enterprise'] %}
+                    and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
                   {% endif %}
                 </p>
-              {% else %}
-                <p><mark>Repository type unknown</mark></p>
-              {% endif %}
-            {% endif %}
 
-            {% if 'documentation' in module %}
-              <p>Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
-            {% endif %}
-
-            {% if 'authors' in module %}
-              <p>
-                Authors:
-                {% for author in module['authors'] %}
-                  {% if author['type'] == 'github' %}
-                    &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
-                  {% elif author['type'] == 'homepage' %}
-                    &nbsp;<a target="_blank" href="https://github.com/{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
+                {% if 'repository' in module %}
+                  {% if module['repository']['type'] == 'github' %}
+                    <p class="module-line">
+                      Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
+                    </p>
                   {% else %}
-                    &nbsp;{{ author['id'] }}@{{ author['type'] }}
+                    <p class="module-line">
+                      <mark>Repository type unknown</mark>
+                    </p>
                   {% endif %}
-                {% endfor %}
-              </p>
-            {% endif %}
-          </div>
-        </div>
+                {% endif %}
+
+                {% if 'documentation' in module %}
+                  <p class="module-line">Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
+                {% endif %}
+
+                {% if 'authors' in module %}
+                  <p class="module-line">
+                    Authors:
+                    {% for author in module['authors'] %}
+                      {% if author['type'] == 'github' %}
+                        &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
+                      {% elif author['type'] == 'homepage' %}
+                        &nbsp;<a target="_blank" href="https://github.com/{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
+                      {% else %}
+                        &nbsp;{{ author['id'] }}@{{ author['type'] }}
+                      {% endif %}
+                    {% endfor %}
+                  </p>
+                {% endif %}
+              </div> <!-- module-info -->
+            </div> <!-- flex-info-container -->
+
+            <div class="flex-stats-container">
+              
+              <div class="flex-badges-container">
+                {% if 'stargazers_count' in module['repository'] %}
+                  <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
+                    <i class="octicon octicon-star" aria-hidden="true"></i>
+                    <div class="repo-statum">
+                      {{ module['repository']['stargazers_count'] }}
+                    </div>
+                  </div> <!-- stars -->
+                {% endif %}
+
+                {% if 'forks_count' in module['repository'] %}
+                  <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
+                    <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
+                    <div class="repo-statum">
+                      {{ module['repository']['forks_count'] }}
+                    </div>
+                 </div> <!-- utensils -->
+                {% endif %}
+              </div> <!-- flex-badges-container -->
+
+              <div class="flex-data-container">
+                <div class="flex-datum-container">
+                  <small><small>
+                    {% if 'last_release' in module['repository'] %}
+                      latest release:<br />
+                      <a target="_blank" href="{{ module['repository']['last_release']['url'] }}">{{ module['repository']['last_release']['name'] }}</a>
+                    {% endif %}
+                  </small></small>
+                </div> <!-- last version -->
+
+                <div class="flex-datum-container">
+                  <small><small>
+                    {% if 'last_modified' in module['repository'] %}
+                      latest commit:<br />
+                      {{ module['repository']['last_modified'] }} days ago
+                    {% endif %}
+                  </small></small>
+                </div> <!-- last commit -->
+              </div> <!-- flex-data-container -->
+
+            </div> <!-- flex-stat-container -->
+          </div> <!-- flex-container -->
+        </div> <!-- row -->
       {% else %}
         <em>Impossible - no modules found.</em>
       {% endfor %}
-    </div>
+    </div> <!-- container -->
 
   {% endblock %}
 
@@ -289,6 +329,11 @@
 
   {% block scripts %}
     {{super()}}
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
     <!-- TODO: Google Analytics -->
   {% endblock %}
 

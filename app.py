@@ -48,6 +48,15 @@ def getGitHubReposStats():
             last_modified = gr.pushed_at
             last_modified = datetime.today() - last_modified
             mr['last_modified'] = last_modified.days
+            r = gr.get_releases()
+            try:
+                l = r[0]
+                mr['last_release'] = {
+                    'name': l.tag_name,
+                    'url': l.url
+                }
+            except IndexError:
+                pass
 
 # Load modules catalog
 def loadModulesCatalog():
