@@ -225,106 +225,110 @@
       {% for module in modules %}
         <div class="row row-module">
           <div class="flex-container">
-            <div class="flex-info-container">
-              <div>
-                {% if 'icon' in module %}
-                  <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
-                {% else %}
-                  <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
-                {% endif %}
-              </div> <!-- module-icon -->
 
-              <div class="module-info">
-                <h2 class="module-name">
-                  {{ module['name'] }}
-                  {% if 'certified' in module and module['certified'] %}
-                    <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
-                  {% endif %}
-                </h2>
-                <p class="module-desc">{{ module['description']|safe }}</p>
-                <p class="module-line">
-                  License: {{ module['license'] }}
-                  {% if 'enterprise' in module and module['enterprise'] %}
-                    and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
-                  {% endif %}
-                </p>
+            <div class="flex-icon-container">
+              {% if 'icon' in module %}
+                <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
+              {% else %}
+                <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
+              {% endif %}
+            </div> <!-- module-icon -->
 
-                {% if 'repository' in module %}
-                  {% if module['repository']['type'] == 'github' %}
-                    <p class="module-line">
-                      Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
-                    </p>
-                  {% else %}
-                    <p class="module-line">
-                      <mark>Repository type unknown</mark>
-                    </p>
-                  {% endif %}
-                {% endif %}
+            <div class="flex-module-container">
 
-                {% if 'documentation' in module %}
-                  <p class="module-line">Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
-                {% endif %}
-
-                {% if 'authors' in module %}
+              <div class="flex-info-container">
+                <div class="module-info">
+                  <h2 class="module-name">
+                    {{ module['name'] }}
+                    {% if 'certified' in module and module['certified'] %}
+                      <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
+                    {% endif %}
+                  </h2>
+                  <p class="module-desc">{{ module['description']|safe }}</p>
                   <p class="module-line">
-                    Authors:
-                    {% for author in module['authors'] %}
-                      {% if author['type'] == 'github' %}
-                        &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
-                      {% elif author['type'] == 'homepage' %}
-                        &nbsp;<a target="_blank" href="{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
-                      {% else %}
-                        &nbsp;{{ author['id'] }}@{{ author['type'] }}
-                      {% endif %}
-                    {% endfor %}
+                    License: {{ module['license'] }}
+                    {% if 'enterprise' in module and module['enterprise'] %}
+                      and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
+                    {% endif %}
                   </p>
-                {% endif %}
-              </div> <!-- module-info -->
-            </div> <!-- flex-info-container -->
 
-            <div class="flex-stats-container">
-              
-              <div class="flex-badges-container">
-                {% if 'stargazers_count' in module['repository'] %}
-                  <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
-                    <i class="octicon octicon-star" aria-hidden="true"></i>
-                    <div class="repo-statum">
-                      {{ module['repository']['stargazers_count'] }}
-                    </div>
-                  </div> <!-- stars -->
-                {% endif %}
-
-                {% if 'forks_count' in module['repository'] %}
-                  <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
-                    <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
-                    <div class="repo-statum">
-                      {{ module['repository']['forks_count'] }}
-                    </div>
-                 </div> <!-- utensils -->
-                {% endif %}
-              </div> <!-- flex-badges-container -->
-
-              <div class="flex-data-container">
-                <div class="flex-datum-container">
-                  <small><small>
-                    {% if 'last_release' in module['repository'] %}
-                      latest release:<br />
-                      <a target="_blank" href="{{ module['repository']['last_release']['url'] }}">{{ module['repository']['last_release']['name'] }}</a>
+                  {% if 'repository' in module %}
+                    {% if module['repository']['type'] == 'github' %}
+                      <p class="module-line">
+                        Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
+                      </p>
+                    {% else %}
+                      <p class="module-line">
+                        <mark>Repository type unknown</mark>
+                      </p>
                     {% endif %}
-                  </small></small>
-                </div> <!-- last version -->
+                  {% endif %}
 
-                <div class="flex-datum-container">
-                  <small><small>
-                    {% if 'last_modified' in module['repository'] %}
-                      latest commit:<br />
-                      {{ module['repository']['last_modified'] }} days ago
-                    {% endif %}
-                  </small></small>
-                </div> <!-- last commit -->
-              </div> <!-- flex-data-container -->
+                  {% if 'documentation' in module %}
+                    <p class="module-line">Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
+                  {% endif %}
 
-            </div> <!-- flex-stat-container -->
+                  {% if 'authors' in module %}
+                    <p class="module-line">
+                      Authors:
+                      {% for author in module['authors'] %}
+                        {% if author['type'] == 'github' %}
+                          &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
+                        {% elif author['type'] == 'homepage' %}
+                          &nbsp;<a target="_blank" href="{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
+                        {% else %}
+                          &nbsp;{{ author['id'] }}@{{ author['type'] }}
+                        {% endif %}
+                      {% endfor %}
+                    </p>
+                  {% endif %}
+                </div> <!-- module-info -->
+              </div> <!-- flex-info-container -->
+
+              <div class="flex-stats-container">
+                
+                <div class="flex-badges-container">
+                  {% if 'stargazers_count' in module['repository'] %}
+                    <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
+                      <i class="octicon octicon-star" aria-hidden="true"></i>
+                      <div class="repo-statum">
+                        {{ module['repository']['stargazers_count'] }}
+                      </div>
+                    </div> <!-- stars -->
+                  {% endif %}
+
+                  {% if 'forks_count' in module['repository'] %}
+                    <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
+                      <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
+                      <div class="repo-statum">
+                        {{ module['repository']['forks_count'] }}
+                      </div>
+                  </div> <!-- utensils -->
+                  {% endif %}
+                </div> <!-- flex-badges-container -->
+
+                <div class="flex-data-container">
+                  <div class="flex-datum-container">
+                    <small><small>
+                      {% if 'last_release' in module['repository'] %}
+                        latest release:<br />
+                        <a target="_blank" href="{{ module['repository']['last_release']['url'] }}">{{ module['repository']['last_release']['name'] }}</a>
+                      {% endif %}
+                    </small></small>
+                  </div> <!-- last version -->
+
+                  <div class="flex-datum-container">
+                    <small><small>
+                      {% if 'last_modified' in module['repository'] %}
+                        latest commit:<br />
+                        {{ module['repository']['last_modified'] }} days ago
+                      {% endif %}
+                    </small></small>
+                  </div> <!-- last commit -->
+                </div> <!-- flex-data-container -->
+
+              </div> <!-- flex-stat-container -->
+            </div> <!-- flex-module-container -->
           </div> <!-- flex-container -->
         </div> <!-- row -->
       {% else %}
