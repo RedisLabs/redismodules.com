@@ -98,6 +98,7 @@ a {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
+    max-width: 38em;
 }
 
 .flex-stats-container {
