@@ -1,0 +1,4 @@
+FROM redismodules.com-web
+LABEL Name=redismodules.com-scheduler Version=0.0.1 
+
+CMD rqscheduler --url $REDIS_URL

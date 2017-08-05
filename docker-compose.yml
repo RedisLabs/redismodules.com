@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile.web
+    image: redismodules.com-web
+    env_file: docker-compose.env
+    ports:
+      - 80:80
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  scheduler:
+    build:
+      context: ./
+      dockerfile: Dockerfile.scheduler
+    image: redismodules.com-scheduler
+    env_file: docker-compose.env
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: ./
+      dockerfile: Dockerfile.worker
+    image: redismodules.com-worker
+    env_file: docker-compose.env
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redismodules.com-redis
+    ports:
+     - 6379:6379

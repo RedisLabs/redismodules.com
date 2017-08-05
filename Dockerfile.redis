@@ -1,0 +1,27 @@
+FROM redis:latest
+LABEL Name=redismodules.com-redis Version=0.0.1
+
+RUN apt-get -y update
+RUN apt-get install -y \
+    build-essential wget zip
+
+WORKDIR /modules
+RUN wget -O RediSearch.zip https://github.com/RedisLabsModules/RediSearch/archive/master.zip
+RUN unzip RediSearch
+RUN mv RediSearch-master RediSearch
+RUN wget -O ReJSON.zip https://github.com/RedisLabsModules/ReJSON/archive/master.zip
+RUN unzip ReJSON
+RUN mv rejson-master ReJSON
+
+WORKDIR /modules/RediSearch
+RUN make
+
+WORKDIR /modules/ReJSON
+RUN make
+
+WORKDIR /
+
+CMD redis-server \
+    --save "" \
+    --loadmodule /modules/RediSearch/src/redisearch.so \
+    --loadmodule /modules/ReJSON/src/rejson.so

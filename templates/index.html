@@ -244,7 +244,11 @@
                       <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
                     {% endif %}
                   </h2>
-                  <p class="module-desc">{{ module['description']|safe }}</p>
+                  <p class="module-desc">
+                    {% if 'description' in module %}
+                      {{ module['description']|safe }}
+                    {% endif %}
+                  </p>
                   <p class="module-line">
                     License: {{ module['license'] }}
                     {% if 'enterprise' in module and module['enterprise'] %}
@@ -286,47 +290,47 @@
               </div> <!-- flex-info-container -->
 
               <div class="flex-stats-container">
-                
-                <div class="flex-badges-container">
-                  {% if 'stargazers_count' in module['repository'] %}
-                    <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
-                      <i class="octicon octicon-star" aria-hidden="true"></i>
-                      <div class="repo-statum">
-                        {{ module['repository']['stargazers_count'] }}
-                      </div>
-                    </div> <!-- stars -->
-                  {% endif %}
+                {% if 'stats' in module %}
+                  <div class="flex-badges-container">
+                    {% if 'stargazers_count' in module['stats'] %}
+                      <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
+                        <i class="octicon octicon-star" aria-hidden="true"></i>
+                        <div class="repo-statum">
+                          {{ module['stats']['stargazers_count'] }}
+                        </div>
+                      </div> <!-- stars -->
+                    {% endif %}
 
-                  {% if 'forks_count' in module['repository'] %}
-                    <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
-                      <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
-                      <div class="repo-statum">
-                        {{ module['repository']['forks_count'] }}
-                      </div>
-                  </div> <!-- utensils -->
-                  {% endif %}
-                </div> <!-- flex-badges-container -->
+                    {% if 'forks_count' in module['stats'] %}
+                      <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
+                        <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
+                        <div class="repo-statum">
+                          {{ module['stats']['forks_count'] }}
+                        </div>
+                    </div> <!-- utensils -->
+                    {% endif %}
+                  </div> <!-- flex-badges-container -->
 
-                <div class="flex-data-container">
-                  <div class="flex-datum-container">
-                    <small><small>
-                      {% if 'last_release' in module['repository'] %}
-                        latest release:<br />
-                        <a target="_blank" href="{{ module['repository']['last_release']['url'] }}">{{ module['repository']['last_release']['name'] }}</a>
-                      {% endif %}
-                    </small></small>
-                  </div> <!-- last version -->
+                  <div class="flex-data-container">
+                    <div class="flex-datum-container">
+                      <small><small>
+                        {% if 'last_release' in module['stats'] %}
+                          latest release:<br />
+                          <a target="_blank" href="{{ module['stats']['last_release']['url'] }}">{{ module['stats']['last_release']['name'] }}</a>
+                        {% endif %}
+                      </small></small>
+                    </div> <!-- last version -->
 
-                  <div class="flex-datum-container">
-                    <small><small>
-                      {% if 'last_modified' in module['repository'] %}
-                        latest commit:<br />
-                        {{ module['repository']['last_modified'] }} days ago
-                      {% endif %}
-                    </small></small>
-                  </div> <!-- last commit -->
-                </div> <!-- flex-data-container -->
-
+                    <div class="flex-datum-container">
+                      <small><small>
+                        {% if 'last_modified' in module['stats'] %}
+                          latest commit:<br />
+                          {{ module['stats']['last_modified'] }} days ago
+                        {% endif %}
+                      </small></small>
+                    </div> <!-- last commit -->
+                  </div> <!-- flex-data-container -->
+                {% endif %}
               </div> <!-- flex-stat-container -->
             </div> <!-- flex-module-container -->
           </div> <!-- flex-container -->
