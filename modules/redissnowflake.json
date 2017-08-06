@@ -1,0 +1,17 @@
+{
+    "name": "Redis Snowflake",
+    "license" : "MIT",
+    "repository": {
+        "type": "github",
+        "name": "erans/redissnowflake"
+    },
+    "description": "Twitter's Snowflake based ID generation as a Redis module",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+        {
+            "type": "github",
+            "id": "erans"
+        }
+    ]
+}

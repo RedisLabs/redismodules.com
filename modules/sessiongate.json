@@ -1,0 +1,17 @@
+{
+    "name": "Session Gate",
+    "license" : "MIT",
+    "repository": {
+        "type": "github",
+        "name": "f0rmiga/sessiongate"
+    },
+    "description": "A Redis module that provides session management",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+        {
+            "type": "github",
+            "id": "f0rmiga"
+        }
+    ]
+}

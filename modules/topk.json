@@ -1,0 +1,23 @@
+{
+  "name": "topk",
+  "license" : "AGPL",
+  "repository": {
+    "type": "github",
+    "name": "RedisLabsModules/topk"
+  },
+  "description": "An almost deterministic top k elements counter",
+  "icon": "topk-icon.png",
+  "certified": false,
+  "enterprise": false,
+  "authors": [
+    {
+      "type": "github",
+      "id": "itamarhaber"
+    },
+    {
+      "type": "homepage",
+      "id": "Redis Labs",
+      "url": "https://redislabs.com"
+    }
+  ]
+}

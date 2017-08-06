@@ -1,0 +1,17 @@
+{
+    "name": "redis-timerseries",
+    "license" : "AGPL",
+    "repository": {
+        "type": "github",
+        "name": "danni-m/redis-timeseries"
+    },
+    "description": "Time-series data structure for Redis",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+        {
+            "type": "github",
+            "id": "danni-m"
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "name": "redis-cuckoofilter",
+    "license" : "MIT",
+    "repository": {
+        "type": "github",
+        "name": "kristoff-it/redis-cuckoofilter"
+    },
+    "description": "Hashing-function agnostic Cuckoo filters for Redis",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+        {
+            "type": "github",
+            "id": "kristoff-it"
+        }
+    ]
+}

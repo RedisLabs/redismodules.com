@@ -1,0 +1,18 @@
+{
+    "name": "redis-cell",
+    "license" : "MIT",
+    "repository": {
+        "type": "github",
+        "name": "brandur/redis-cell"
+    },
+    "description": "A Redis module that provides rate limiting in Redis as a single command",
+    "icon": "redis-cell-icon.png",
+    "certified": false,
+    "enterprise": false,
+    "authors": [
+        {
+            "type": "github",
+            "id": "brandur"
+        }
+    ]
+}

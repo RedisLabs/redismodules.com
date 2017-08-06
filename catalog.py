@@ -15,33 +15,23 @@ class Catalog(object):
 
     _conn = None
     _key = 'hub:catalog'
+    _directory = 'modules'
 
     def __init__(self):
         epoch = int(time.time())
         logger.info('Initializing modules catalog')
 
-        with open('modules.json') as fp:
-            mods = json.load(fp)
-
-        sha1 = hashlib.sha1(json.dumps(mods)).hexdigest()
-
         self._conn = Client(os.environ['REDIS_URL'], 'idx')
 
         # Check if catalog exists
         if self._conn.exists(self._key):
-            if self._conn.jsonget(self._key, Path('.jsonfile_sha1')) == sha1:
-                logger.info('No changes detected in modules file')
-                pass
-            else:
-                logger.info('New modules file detected - TBD merge?!? ')
-                pass
+            pass
         else:   # Create the catalog
             logger.info('Building catalog in Redis')
             # Store the master catalog as an object
             self._conn.jsonset(self._key, Path.rootPath(),
             {
                 'created_timestamp': epoch,
-                'jsonfile_sha1': sha1,
                 'modules': {},
             })
 
@@ -53,16 +43,21 @@ class Catalog(object):
                 NumericField('forks_count', sortable=True),
             ), stopwords = ('redis', 'module'))
 
-            for mod in mods:
-                # Create the module
-                m = RedisModule('module:{}'.format(mod['name']), mod=mod, conn=self._conn)
+            # Iterate module JSON files
+            for filename in os.listdir(self._directory):
+                if filename.endswith(".json"): 
+                    with open('{}/{}'.format(self._directory, filename)) as fp:
+                        mod = json.load(fp)
 
-                # Add a reference to it in the catalog
-                self._conn.jsonset(self._key, Path('.modules["{}"]'.format(mod['name'])), 
-                {
-                    'id': m.docId,
-                    'created_timestamp': epoch,
-                })
+                    # Create the module
+                    m = RedisModule('module:{}'.format(mod['name']), mod=mod, conn=self._conn)
+
+                    # Add a reference to it in the catalog
+                    self._conn.jsonset(self._key, Path('.modules["{}"]'.format(mod['name'])), 
+                    {
+                        'id': m.docId,
+                        'created_timestamp': epoch,
+                    })
 
     def getAllModules(self):
         modules = self._conn.jsonget(self._key, Path('.modules'))

@@ -1,0 +1,24 @@
+{
+    "name": "rebloom",
+    "license" : "AGPL",
+    "repository": {
+        "type": "github",
+        "name": "RedisLabsModules/rebloom"
+    },
+    "documentation": "https://rebloom.io",
+    "description": "Scalable Bloom filters",
+    "icon": "rebloom-icon.png",
+    "certified": true,
+    "enterprise": true,
+    "authors": [
+        {
+            "type": "github",
+            "id": "mnunberg"
+        },
+        {
+            "type": "homepage",
+            "id": "Redis Labs",
+            "url": "https://redislabs.com"
+        }
+    ]
+}
