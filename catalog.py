@@ -64,4 +64,6 @@ class Catalog(object):
         p = self._conn.pipeline()
         for k, v in modules.iteritems():
             p.jsonget(v['id'])
-        return p.execute()
+        return {
+            'modules': p.execute()
+        }

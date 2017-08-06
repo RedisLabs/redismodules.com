@@ -3,7 +3,8 @@
     "license" : "AGPL",
     "repository": {
         "type": "github",
-        "name": "RedisLabsModules/countminsketch"
+        "id": "RedisLabsModules/countminsketch",
+        "url": "https://github.com/RedisLabsModules/countminsketch"
     },
     "description": "An apporximate frequency counter",
     "icon": "countminsketch-icon.png",
@@ -11,8 +12,9 @@
     "enterprise": false,
     "authors": [
         {
-            "type": "github",
-            "id": "itamarhaber"
+            "type": "twitter",
+            "id": "itamarhaber",
+            "url": "https://twitter.com/itamarhaber"
         },
         {
             "type": "homepage",

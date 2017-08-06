@@ -22,7 +22,12 @@ Bootstrap(app)
 
 @app.route('/')
 def homepage():
-    return render_template('index.html', modules=catalog.getAllModules())
+    return render_template('index.html', modules=[]) # catalog.getAllModules()['modules'])
+
+@app.route('/modules')
+@app.route('/modules/<int:page>')
+def modules(page=0):
+    return json.dumps(catalog.getAllModules())
 
 if __name__ == '__main__':
     app.run()

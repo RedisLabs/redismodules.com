@@ -3,7 +3,8 @@
     "license" : "AGPL",
     "repository": {
         "type": "github",
-        "name": "RedisLabsModules/ReJSON"
+        "id": "RedisLabsModules/ReJSON",
+        "url": "https://github.com/RedisLabsModules/ReJSON"
     },
     "documentation": "https://rejson.io",
     "description": "A JSON data type for Redis",
@@ -12,8 +13,9 @@
     "enterprise": true,
     "authors": [
         {
-            "type": "github",
-            "id": "itamarhaber"
+            "type": "twitter",
+            "id": "itamarhaber",
+            "url": "https://twitter.com/itamarhaber"
         },
         {
             "type": "homepage",

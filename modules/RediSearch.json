@@ -3,7 +3,8 @@
     "license" : "AGPL",
     "repository": {
         "type": "github",
-        "name": "RedisLabsModules/RediSearch"
+        "id": "RedisLabsModules/RediSearch",
+        "url": "https://github.com/RedisLabsModules/RediSearch"
     },
     "documentation": "https://redisearch.io",
     "description": "Search engine over Redis",
@@ -12,8 +13,9 @@
     "enterprise": true,
     "authors": [
         {
-            "type": "github",
-            "id": "dvirsky"
+            "type": "twitter",
+            "id": "dvirsky",
+            "url": "https://twitter.com/dvirsky"
         },
         {
             "type": "homepage",

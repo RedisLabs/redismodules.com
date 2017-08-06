@@ -3,7 +3,8 @@
     "license" : "MIT",
     "repository": {
         "type": "github",
-        "name": "usmanm/redis-tdigest"
+        "id": "usmanm/redis-tdigest",
+        "url": "https://github.com/usmanm/redis-tdigest"
     },
     "description": "t-digest data structure which can be used for accurate online accumulation of rank-based statistics such as quantiles and cumulative distribution at a point",
     "icon": "tdigest-icon.png",
@@ -11,8 +12,9 @@
     "enterprise": false,
     "authors": [
         {
-            "type": "github",
-            "id": "usmanm"
+            "type": "twitter",
+            "id": "usmanm",
+            "url": "https://twitter.com/usmanm"
         }
     ]
 }

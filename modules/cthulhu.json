@@ -3,7 +3,8 @@
     "license" : "BSD",
     "repository": {
         "type": "github",
-        "name": "sklivvz/cthulhu"
+        "id": "sklivvz/cthulhu",
+        "url": "https://github.com/sklivvz/cthulhu"
     },
     "description": "Extend Redis with JavaScript modules",
     "icon": "cthulhu-icon.png",
@@ -11,8 +12,9 @@
     "enterprise": false,
     "authors": [
         {
-            "type": "github",
-            "id": "sklivvz"
+            "type": "twitter",
+            "id": "sklivvz",
+            "url": "https://twitter.com/sklivvz"
         }
     ]
 }

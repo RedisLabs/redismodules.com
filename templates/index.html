@@ -9,7 +9,7 @@
 
 {% block styles -%}
   {{super()}}
-  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
@@ -221,125 +221,8 @@
 
   <!-- MODULES! MODULES! MODULES! -->
   {% block content %}
-    <div class="container">
-      {% for module in modules %}
-        <div class="row row-module">
-          <div class="flex-container">
-
-            <div class="flex-icon-container">
-              {% if 'icon' in module %}
-                <img class="module-icon" src="{{url_for('.static', filename='images/{}'.format(module['icon']))}}" />
-              {% else %}
-                <img class="module-icon" src="{{url_for('.static', filename='images/module-icon.png')}}" />
-              {% endif %}
-            </div> <!-- module-icon -->
-
-            <div class="flex-module-container">
-
-              <div class="flex-info-container">
-                <div class="module-info">
-                  <h2 class="module-name">
-                    {{ module['name'] }}
-                    {% if 'certified' in module and module['certified'] %}
-                      <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
-                    {% endif %}
-                  </h2>
-                  <p class="module-desc">
-                    {% if 'description' in module %}
-                      {{ module['description']|safe }}
-                    {% endif %}
-                  </p>
-                  <p class="module-line">
-                    License: {{ module['license'] }}
-                    {% if 'enterprise' in module and module['enterprise'] %}
-                      and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
-                    {% endif %}
-                  </p>
-
-                  {% if 'repository' in module %}
-                    {% if module['repository']['type'] == 'github' %}
-                      <p class="module-line">
-                        Repository: <a target="_blank" href="https://github.com/{{ module['repository']['name'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ module['repository']['name'] }}</a>
-                      </p>
-                    {% else %}
-                      <p class="module-line">
-                        <mark>Repository type unknown</mark>
-                      </p>
-                    {% endif %}
-                  {% endif %}
-
-                  {% if 'documentation' in module %}
-                    <p class="module-line">Documentation: <a target="_blank" href="{{ module['documentation'] }}">{{ module['documentation'] }}</a></p>
-                  {% endif %}
-
-                  {% if 'authors' in module %}
-                    <p class="module-line">
-                      Authors:
-                      {% for author in module['authors'] %}
-                        {% if author['type'] == 'github' %}
-                          &nbsp;<a target="_blank" href="https://github.com/{{ author['id'] }}"><i class="fa fa-github" aria-hidden="true"></i> {{ author['id'] }}</a>
-                        {% elif author['type'] == 'homepage' %}
-                          &nbsp;<a target="_blank" href="{{ author['url'] }}"><i class="fa fa-home" aria-hidden="true"></i> {{ author['id'] }}</a>
-                        {% else %}
-                          &nbsp;{{ author['id'] }}@{{ author['type'] }}
-                        {% endif %}
-                      {% endfor %}
-                    </p>
-                  {% endif %}
-                </div> <!-- module-info -->
-              </div> <!-- flex-info-container -->
-
-              <div class="flex-stats-container">
-                {% if 'stats' in module %}
-                  <div class="flex-badges-container">
-                    {% if 'stargazers_count' in module['stats'] %}
-                      <div class="flex-badge-container" data-toggle="tooltip" title="Stargazers"> <!-- look st the stars, look how they shine for you -->
-                        <i class="octicon octicon-star" aria-hidden="true"></i>
-                        <div class="repo-statum">
-                          {{ module['stats']['stargazers_count'] }}
-                        </div>
-                      </div> <!-- stars -->
-                    {% endif %}
-
-                    {% if 'forks_count' in module['stats'] %}
-                      <div class="flex-badge-container" data-toggle="tooltip" title="Forks"> <!-- utensils -->
-                        <i class="octicon octicon-repo-forked" aria-hidden="true"></i>
-                        <div class="repo-statum">
-                          {{ module['stats']['forks_count'] }}
-                        </div>
-                    </div> <!-- utensils -->
-                    {% endif %}
-                  </div> <!-- flex-badges-container -->
-
-                  <div class="flex-data-container">
-                    <div class="flex-datum-container">
-                      <small><small>
-                        {% if 'last_release' in module['stats'] %}
-                          latest release:<br />
-                          <a target="_blank" href="{{ module['stats']['last_release']['url'] }}">{{ module['stats']['last_release']['name'] }}</a>
-                        {% endif %}
-                      </small></small>
-                    </div> <!-- last version -->
-
-                    <div class="flex-datum-container">
-                      <small><small>
-                        {% if 'last_modified' in module['stats'] %}
-                          latest commit:<br />
-                          {{ module['stats']['last_modified'] }} days ago
-                        {% endif %}
-                      </small></small>
-                    </div> <!-- last commit -->
-                  </div> <!-- flex-data-container -->
-                {% endif %}
-              </div> <!-- flex-stat-container -->
-            </div> <!-- flex-module-container -->
-          </div> <!-- flex-container -->
-        </div> <!-- row -->
-      {% else %}
-        <em>Impossible - no modules found.</em>
-      {% endfor %}
-    </div> <!-- container -->
-
+    <div id="modules-list" class="container">
+    </div> <!-- container modules-list -->
   {% endblock %}
 
   <footer class="footer">
@@ -350,12 +233,94 @@
 
   {% block scripts %}
     {{super()}}
-    <script>
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+    <script src="{{url_for('.static', filename='scripts/data.js')}}" /></script>
     <!-- TODO: Google Analytics -->
+
+    <script id="module-template" type="text/x-handlebars-template">
+      {% raw %}
+        {{#each modules}}
+          <div class="row row-module">
+            <div class="flex-container">
+
+              <div class="flex-icon-container">
+                {{#if icon}}
+                  <img class="module-icon" src="/static/images/{{icon}}" />
+                {{else}}
+                  <img class="module-icon" src="/static/images/module-icon.png" />
+                {{/if}}
+              </div> <!-- flex-icon-container -->
+
+              <div class="flex-module-container">
+
+                <div class="flex-info-container">
+                  <div class="module-info">
+                    <h2 class="module-name">
+                      {{name}}
+                      {{#if certified}}
+                        <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
+                      {{/if}}
+                    </h2>
+                    <p class="module-desc">
+                      {{description}}
+                    </p>
+                    <p class="module-line">
+                      License: {{license}}
+                      {{#if enterprise}}
+                        and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
+                      {{/if}}
+                    </p>
+
+                    {{#if repository}}
+                      <p class="module-line">
+                        Repository: {{link repository}}
+                      </p>
+                    {{/if}}
+
+                    {{#if documentation}}
+                      <p class="module-line">
+                        Documentation: <a target="_blank" href="{{documentation}}">{{documentation}}</a>
+                    </p>
+                    {{/if}}
+
+                    {{#if authors}}
+                      <p class="module-line">
+                        Authors:
+                        {{#each authors}}
+                          {{link this}}
+                        {{/each}}
+                      </p>
+                    {{/if}}
+                  </div> <!-- module-info -->
+                </div> <!-- flex-info-container -->
+
+                <div class="flex-stats-container">
+                  {{#if stats}}
+                    <div class="flex-badges-container">
+                      {{starsbadge stats.stargazers_count}}
+                      {{forksbadge stats.forks_count}}
+                    </div> <!-- flex-badges-container -->
+
+                    <div class="flex-data-container">
+                      {{releaseinfo stats.last_release}}
+                      {{updateinfo stats.last_modified}}
+                    </div> <!-- flex-data-container -->
+                  {{/if}}
+                </div> <!-- flex-stat-container -->
+              </div> <!-- flex-module-container -->
+            </div> <!-- flex-container -->
+          </div> <!-- row -->
+        {{/each}}
+      {% endraw %}
+    </script> <!-- module-template -->
+
+    <script>
+      (function() {
+        $( document ).ready( function() {
+          getModulesListing();
+        })
+      })();
+    </script>
   {% endblock %}
 
 {% endblock %}

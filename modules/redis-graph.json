@@ -3,7 +3,8 @@
     "license" : "AGPL",
     "repository": {
         "type": "github",
-        "name": "RedisLabsModules/redis-graph"
+        "id": "RedisLabsModules/redis-graph",
+        "url": "https://github.com/RedisLabsModules/redis-graph"
     },
     "documentation": "https://redisgraph.io",
     "description": "A graph database with an Open Cypher-based querying language",
@@ -12,8 +13,9 @@
     "enterprise": true,
     "authors": [
         {
-            "type": "github",
-            "id": "swilly22"
+            "type": "twitter",
+            "id": "roilipman",
+            "url": "https://twitter.com/roilipman"
         },
         {
             "type": "homepage",

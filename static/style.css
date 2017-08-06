@@ -129,7 +129,7 @@ a {
 
 .flex-data-container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     flex-flow: row nowrap;
 }
 

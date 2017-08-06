@@ -54,10 +54,10 @@ class RedisModule(object):
 
         if repo and \
             'type' in repo and repo['type'] == 'github' and \
-            'name' in repo:
+            'id' in repo:
 
-            logger.info('Fetching stats for {}...'.format(repo['name']))
-            g = gh.get_repo(repo['name'])
+            logger.info('Fetching stats for {}...'.format(repo['id']))
+            g = gh.get_repo(repo['id'])
             stats = {
                 'stargazers_count': g.stargazers_count,
                 'forks_count': g.forks_count,

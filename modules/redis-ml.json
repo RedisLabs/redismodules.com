@@ -3,7 +3,8 @@
     "license" : "AGPL",
     "repository": {
         "type": "github",
-        "name": "RedisLabsModules/redis-ml"
+        "id": "RedisLabsModules/redis-ml",
+        "url": "https://github.com/RedisLabsModules/redis-ml"
     },
     "documentation": "https://redisml.io",
     "description": "Machine Learning Model Server",
@@ -12,8 +13,9 @@
     "enterprise": true,
     "authors": [
         {
-            "type": "github",
-            "id": "shaynativ"
+            "type": "twitter",
+            "id": "shaynativ",
+            "url": "https://twitter.com/shaynativ"
         },
         {
             "type": "homepage",

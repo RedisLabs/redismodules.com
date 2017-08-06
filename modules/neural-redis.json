@@ -3,15 +3,17 @@
     "license" : "BSD",
     "repository": {
         "type": "github",
-        "name": "antirez/neural-redis"
+        "id": "antirez/neural-redis",
+        "url": "https://github.com/antirez/neural-redis"
     },
     "description": "Online trainable neural networks as Redis data types",
     "certified": false,
     "enterprise": false,
     "authors": [
         {
-            "type": "github",
-            "id": "antirez"
+            "type": "twitter",
+            "id": "antirez",
+            "url": "https://twitter.com/antirez"
         }
     ]
 }
