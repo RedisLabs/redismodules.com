@@ -1,8 +1,12 @@
 click==6.7
 croniter==0.3.17
 dominate==2.3.1
+enum-compat==0.0.2
+enum34==1.1.6
+eventlet==0.21.0
 Flask==0.12.2
 Flask-Bootstrap==3.3.7.1
+Flask-SocketIO==2.9.2
 funcsigs==1.0.2
 futures==3.1.1
 greenlet==0.4.12
@@ -14,6 +18,8 @@ MarkupSafe==1.0
 PyGithub==1.35
 PyJWT==1.5.2
 python-dateutil==2.6.1
+python-engineio==1.7.0
+python-socketio==1.8.0
 pytz==2017.2
 redis==2.10.5
 redisearch==0.6.2

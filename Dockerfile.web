@@ -1,15 +1,4 @@
-FROM ubuntu:latest
+FROM redismodules.com-app
 LABEL Name=redismodules.com-web Version=0.0.1 
 
-RUN apt-get -y update
-RUN apt-get install -y \
-    python python-pip
-
-ADD ./requirements.txt /app/requirements.txt
-WORKDIR /app
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
-EXPOSE 80
-
-ADD . /app
-CMD gunicorn app:app -b 0.0.0.0:80 --log-file -
+EXPOSE 5000

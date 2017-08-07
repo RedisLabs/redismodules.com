@@ -50,7 +50,8 @@ class RedisModule(object):
     def updateStats(self):
         # github.enable_console_debug_logging()
         gh = Github(os.environ['GITHUB_TOKEN'])
-        repo = self._conn.jsonget(self.docId, Path('.repository'))
+        mod = self._conn.jsonget(self.docId, Path('name'), Path('description'), Path('repository'))
+        repo = mod['repository']
 
         if repo and \
             'type' in repo and repo['type'] == 'github' and \
@@ -74,4 +75,4 @@ class RedisModule(object):
                 pass
 
         self._conn.jsonset(self.docId, Path('.stats'), stats)
-        self._conn.add_document(self.docId, nosave=True, replace=True, **stats)
+        self._conn.add_document(self.docId, nosave=True, replace=True, name=mod['name'], description=mod['description'], **stats)

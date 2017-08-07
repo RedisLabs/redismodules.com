@@ -121,6 +121,15 @@
               </g>
             </svg>
           </a>
+
+          <form class="navbar-form navbar-left" role="search">
+            <fieldset>
+              <div class="form-group">
+                <input id="search-query" type="text" class="form-control typeahead" placeholder="Search" data-provide="typeahead">
+              </div>
+            </fieldset>
+          </form>
+
         </div>
       </div>
     </div>
@@ -235,6 +244,8 @@
     {{super()}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
     <script src="{{url_for('.static', filename='scripts/data.js')}}" /></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
     <!-- TODO: Google Analytics -->
 
     <script id="module-template" type="text/x-handlebars-template">
@@ -247,7 +258,7 @@
                 {{#if icon}}
                   <img class="module-icon" src="/static/images/{{icon}}" />
                 {{else}}
-                  <img class="module-icon" src="/static/images/module-icon.png" />
+                  <img class="module-icon" src="/static/images/module-icon.svg" />
                 {{/if}}
               </div> <!-- flex-icon-container -->
 
@@ -314,12 +325,17 @@
       {% endraw %}
     </script> <!-- module-template -->
 
-    <script>
-      (function() {
-        $( document ).ready( function() {
-          getModulesListing();
-        })
-      })();
+    <script type="text/javascript" charset="utf-8">
+      function results(data) {
+        console.log(data);
+      }
+
+      $( document ).ready( function() {
+        getModulesListing();
+      });
+
+      const socket = io('http://' + document.domain + ':' + location.port);
+      socket.on('results', results);
     </script>
   {% endblock %}
 
