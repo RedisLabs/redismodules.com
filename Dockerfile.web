@@ -1,4 +1,4 @@
 FROM redismodules.com-app
 LABEL Name=redismodules.com-web Version=0.0.1 
 
-EXPOSE 5000
+EXPOSE 8000

@@ -1,2 +1,2 @@
 #!/bin/bash
-rqscheduler --url $REDIS_URL
+rqscheduler --interval 60 --url $QUEUE_REDIS_URL

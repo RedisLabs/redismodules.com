@@ -1,16 +1,18 @@
 from redisearch import Client as RSClient
-from redisearch import NumericField, TextField
+from redisearch import AutoCompleter, Suggestion
+from redisearch import NumericField, TextField, Query, SortbyField
 from rejson import Client as RJClient
 from rejson import Path
 from rejson.client import BasePipeline
 from redis import ConnectionPool
 
-class Client(RJClient, RSClient):
+class Client(RJClient, RSClient, AutoCompleter):
 
-    def __init__(self, url, idx, *args, **kwargs):
+    def __init__(self, url, idx, ac, *args, **kwargs):
         pool = ConnectionPool(RJClient).from_url(url)
         RJClient.__init__(self, connection_pool=pool)
         RSClient.__init__(self, idx, conn=self)
+        AutoCompleter.__init__(self, ac, conn=self)
 
     def pipeline(self, transaction=True, shard_hint=None):
         """

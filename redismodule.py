@@ -1,55 +1,48 @@
 import logging
 import os
+import re
 from datetime import datetime
 
 from github import Github
-from rq_scheduler import Scheduler
 
-from redisearchjson import Client, NumericField, Path, TextField
+from redisearchjson import Client, NumericField, Path, TextField, Suggestion
+from stopwords import stopwords
 
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s] [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
-def callUpateStats(docId):
-    module = RedisModule(docId)
-    module.updateStats()
+def callUpateStats(db_url, docId, ghlogin_or_token, index='ix', ac='ac'):
+    conn = Client(db_url, index, ac)
+    module = RedisModule(conn, docId)
+    module.updateStats(ghlogin_or_token)
 
 class RedisModule(object):
     _conn = None
     docId = None
 
-    def __init__(self, docId, mod=None, conn=None):
-        if not conn:
-            self._conn = Client(os.environ['REDIS_URL'], 'idx')
-        else:
-            self._conn = conn
+    def __init__(self, conn, docId):
+        self._conn = conn
         self.docId = docId
 
-        if mod:
-            # Store the module
-            self._conn.jsonset(docId, Path.rootPath(), mod)
-            # Index it
-            self._conn.add_document(docId, nosave=True,
-                name=mod['name'],
-                description=mod['description'],
-            )
+    def load(self, mod):
+        # Store the module
+        self._conn.jsonset(self.docId, Path.rootPath(), mod)
+        # Index it
+        self._conn.add_document(self.docId, nosave=True,
+            name=mod['name'],
+            description=mod['description'], 
+        )
+        # Add the module's name and description to the suggestions engine
+        text = '{} {}'.format(mod['name'], mod['description'])
+        words = set(re.compile('\w+').findall(text))
+        words = set(w.lower() for w in words)
+        words = words.difference(stopwords)
+        self._conn.add_suggestions(*[Suggestion(w) for w in words])
 
-            # Schedule a job to refresh repository statistics, starting from now and every 4 hours
-            s = Scheduler(connection=self._conn)
-            s.schedule(
-                scheduled_time=datetime.utcnow(),
-                func=callUpateStats,
-                args=[docId],
-                interval=60*60*4,
-                repeat=None,
-                ttl=0,
-                result_ttl=0
-            )
-
-    def updateStats(self):
+    def updateStats(self, ghlogin_or_token):
         # github.enable_console_debug_logging()
-        gh = Github(os.environ['GITHUB_TOKEN'])
+        gh = Github(ghlogin_or_token)
         mod = self._conn.jsonget(self.docId, Path('name'), Path('description'), Path('repository'))
         repo = mod['repository']
 

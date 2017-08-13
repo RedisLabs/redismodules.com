@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian
 LABEL Name=redismodules.com-app Version=0.0.1 
 
 RUN apt-get -y update

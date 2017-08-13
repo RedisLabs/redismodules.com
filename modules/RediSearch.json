@@ -8,7 +8,7 @@
     },
     "documentation": "https://redisearch.io",
     "description": "Search engine over Redis",
-    "icon": "redisearch-icon.png",
+    "icon": "redisearch-icon.svg",
     "certified": true,
     "enterprise": true,
     "authors": [

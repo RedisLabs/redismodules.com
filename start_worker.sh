@@ -1,2 +1,2 @@
 #!/bin/bash
-rq worker --url $REDIS_URL
+rq worker --url $QUEUE_REDIS_URL

@@ -8,7 +8,7 @@
     },
     "documentation": "https://redisml.io",
     "description": "Machine Learning Model Server",
-    "icon": "redis-ml-icon.png",
+    "icon": "redis-ml-icon.svg",
     "certified": true,
     "enterprise": true,
     "authors": [

@@ -2,6 +2,9 @@ version: '2.1'
 
 services:
   redis:
+    build:
+      context: ./
+      dockerfile: Dockerfile.redis
     image: redismodules.com-redis
     ports:
      - 6379:6379
@@ -38,7 +41,7 @@ services:
     env_file: docker-compose.env
     command: bash start_web.sh
     ports:
-      - 80:5000
+      - 8000:8000
     links:
       - redis
     depends_on:

@@ -20,7 +20,7 @@ a {
 }
 
 .navbar {
-    background-color: #b62311;
+    background-color: #b62411;
     padding: .5rem 1rem;
     display: block;
     z-index: 99999;
@@ -30,9 +30,34 @@ a {
     width: 100px;
 }
 
+.search-field span {
+    background-color: #ffffff;
+}
+
+.search-field input {
+    border-right-style: none;
+    width: 25em;
+}
+
 .btn-submit {
     color: #ffffff; 
     background-color: #b62411;
+}
+
+.lbl-display {
+    margin-left: 1em;
+    margin-right: 0.5em;
+}
+
+.btn-sort {
+    width: 8em;
+    text-align: left;
+}
+
+.caret-right {
+    position: absolute;
+    left: 85%;
+    top: 45%;
 }
 
 .redisefont {
@@ -71,7 +96,7 @@ a {
 
 .row-module {
     margin-bottom: 1.5em;
-    border: 2px solid #dddddd;
+    border: 2px solid #a7a7a7;
     border-radius: 5px;
 }
 
@@ -79,6 +104,14 @@ a {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
+}
+
+.flex-options-container {
+    display: flex;
+    padding-bottom: 0.5em;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .flex-module-container {
@@ -94,8 +127,8 @@ a {
 }
 
 .flex-info-container {
-    padding-bottom: 0.5em;
     display: flex;
+    padding-bottom: 0.5em;
     flex-flow: row nowrap;
     justify-content: flex-start;
     max-width: 38em;
@@ -114,7 +147,7 @@ a {
 }
 
 .flex-badge-container {
-    border: 2px solid #dddddd;
+    border: 2px solid #a7a7a7;
     border-radius: 5px;
     padding: 0.2em 0.4em;
     margin: 0.5em 0.4em 0 0;
