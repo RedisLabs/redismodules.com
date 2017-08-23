@@ -1,5 +1,5 @@
 FROM redis:latest
-LABEL Name=redismodules.com-redis Version=0.0.1
+LABEL Name=rmhub-redis Version=0.0.1
 
 RUN apt-get -y update
 RUN apt-get install -y \

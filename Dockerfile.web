@@ -1,4 +1,7 @@
-FROM redismodules.com-app
-LABEL Name=redismodules.com-web Version=0.0.1 
+FROM rmhub-app
+LABEL Name=rmhub-web Version=0.0.1 
+
+RUN pip install .[web]
+RUN pip install gunicorn eventlet
 
 EXPOSE 8000

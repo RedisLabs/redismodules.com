@@ -1,0 +1,458 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{super()}}
+<link rel="icon" href="{{url_for('.static', filename='images/favicon.png')}}">
+{% endblock %}
+
+{% block title %}Redis Modules Hub{% endblock %}
+
+{% block styles -%}
+{{super()}}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="{{url_for('.static', filename='styles/style.css')}}">
+{% endblock %}
+
+{% block body %}
+
+{% block navbar %}
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://redislabs.com">
+        <!-- Redis Labs logo -->
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 130 43" style="enable-background:new 0 0 130 43;" xml:space="preserve" class="logo">
+        <style type="text/css">
+          .st0{fill:#ffffff;}
+          .st1{fill:#ffffff;}
+        </style>
+        <g>
+          <g>
+            <path class="st0" d="M71.8,2.2c0-0.6,0.2-1.1,0.6-1.5c0.4-0.4,0.9-0.6,1.4-0.6c0.6,0,1.1,0.2,1.5,0.6c0.4,0.4,0.6,0.9,0.6,1.5v22
+            c0,0.6-0.2,1.1-0.6,1.5c-0.4,0.4-0.9,0.6-1.5,0.6c-0.6,0-1-0.2-1.4-0.6c-0.4-0.4-0.6-0.9-0.6-1.5V2.2z"/>
+            <path class="st0" d="M79.8,23.6c-1.7-1.8-2.5-4-2.5-6.6c0-2.6,0.8-4.8,2.5-6.6c1.7-1.8,3.8-2.7,6.3-2.7c1.8,0,3.4,0.5,4.9,1.6
+            c0.1-0.5,0.4-0.9,0.7-1.2c0.3-0.3,0.8-0.5,1.3-0.5c0.5,0,1,0.2,1.3,0.6C94.8,8.7,95,9.1,95,9.7v14.7c0,0.5-0.2,1-0.6,1.4
+            c-0.4,0.4-0.8,0.6-1.3,0.6c-0.5,0-0.9-0.2-1.3-0.5c-0.3-0.3-0.6-0.7-0.7-1.2c-1.5,1.1-3.2,1.6-4.9,1.6
+            C83.6,26.3,81.5,25.4,79.8,23.6 M81.3,17c0,1.5,0.5,2.8,1.4,3.8c0.9,1,2.1,1.5,3.5,1.5c1.4,0,2.6-0.5,3.5-1.5
+            c0.9-1,1.4-2.3,1.4-3.8c0-1.5-0.5-2.8-1.4-3.8c-0.9-1-2.1-1.6-3.5-1.6c-1.4,0-2.6,0.5-3.5,1.6C81.7,14.2,81.3,15.5,81.3,17"/>
+          </g>
+          <g>
+            <path class="st0" d="M96.7,24.3V2.2c0-0.5,0.2-1,0.6-1.4c0.4-0.4,0.9-0.6,1.4-0.6c0.6,0,1,0.2,1.4,0.6c0.4,0.4,0.6,0.9,0.6,1.4v7
+            c1.5-1,3.1-1.6,5-1.6c2.5,0,4.6,0.9,6.4,2.8c1.8,1.8,2.6,4,2.6,6.6c0,2.6-0.9,4.7-2.6,6.6c-1.8,1.8-3.9,2.7-6.4,2.7
+            c-1.8,0-3.5-0.5-5.1-1.6c-0.1,0.4-0.3,0.8-0.7,1.1c-0.4,0.3-0.8,0.5-1.3,0.5c-0.5,0-1-0.2-1.4-0.6C96.9,25.3,96.7,24.9,96.7,24.3
+            M109.2,13.3c-1-1-2.1-1.6-3.5-1.6c-1.4,0-2.6,0.5-3.5,1.6c-1,1-1.5,2.3-1.5,3.7c0,1.4,0.5,2.7,1.5,3.7c1,1,2.1,1.6,3.5,1.6
+            c1.4,0,2.5-0.5,3.5-1.6c1-1,1.5-2.3,1.5-3.7C110.7,15.6,110.2,14.3,109.2,13.3"/>
+            <path class="st0" d="M127.8,9.7c0.4,0.3,0.7,0.7,0.8,1.2c0.1,0.5,0,1-0.2,1.5c-0.3,0.4-0.7,0.7-1.2,0.8c-0.5,0.1-1,0-1.5-0.3
+            c-1.4-0.9-2.5-1.4-3.4-1.4c-0.9,0-1.6,0.2-2.2,0.7c-0.4,0.3-0.6,0.5-0.6,0.7c0,0.2,0,0.4,0.1,0.5c0.1,0.1,0.2,0.2,0.4,0.3
+            c0.5,0.4,1.4,0.7,2.7,0.9l0,0h0c1.3,0.2,2.5,0.6,3.6,1.1c1.1,0.5,1.9,1.2,2.4,2.1c0.5,0.9,0.8,1.7,0.8,2.6c0,1.7-0.8,3.2-2.3,4.3
+            c-1.4,1-3,1.5-4.8,1.5c-2.3,0-4.5-0.9-6.6-2.6c-0.4-0.3-0.6-0.8-0.7-1.3c-0.1-0.6,0.1-1,0.4-1.4c0.3-0.4,0.8-0.7,1.3-0.7
+            c0.6-0.1,1,0.1,1.4,0.4c1.3,1.1,2.7,1.7,4.1,1.6c0.9,0,1.8-0.2,2.5-0.7c0.4-0.4,0.7-0.7,0.7-1c0-0.3,0-0.4-0.1-0.5
+            c-0.1-0.1-0.2-0.3-0.5-0.4c-0.6-0.4-1.6-0.8-3-1h0c-1.3-0.2-2.5-0.6-3.4-1.1c-1-0.5-1.8-1.2-2.4-2.1c-0.4-0.7-0.6-1.5-0.6-2.3
+            c0-1.6,0.7-3,2.2-4.1c1.3-0.9,2.9-1.4,4.6-1.4C124,7.7,125.9,8.4,127.8,9.7"/>
+          </g>
+          <g>
+            <path class="st1" d="M4.5,10c0.6-0.7,1.4-1.2,2.3-1.6c1-0.4,1.9-0.6,2.7-0.6c0.8,0,1.4,0.2,1.8,0.6c0.4,0.4,0.6,0.8,0.6,1.4
+            c0,0.5-0.2,1-0.6,1.4c-0.4,0.4-0.8,0.6-1.4,0.6c-2.3,0.2-5.5,2.5-5.5,5.6v7.1c0,0.5-0.2,1-0.6,1.4c-0.4,0.4-0.9,0.6-1.4,0.6
+            c-0.6,0-1-0.2-1.4-0.6c-0.4-0.4-0.6-0.9-0.6-1.4V9.7c0-0.5,0.2-1,0.6-1.4C1.5,8,1.9,7.8,2.5,7.8c0.6,0,1,0.2,1.4,0.6
+            c0.4,0.4,0.6,0.8,0.6,1.4V10z"/>
+            <path class="st1" d="M29.3,16.5c0,0.5-0.2,1-0.5,1.3c-0.4,0.3-0.8,0.6-1.4,0.6H15.6c0.2,1.1,0.6,1.8,1.3,2.4
+            c0.8,0.9,1.9,1.5,3.5,1.7c1.5,0.2,2.8-0.1,3.9-0.9c0.4-0.4,0.9-0.6,1.5-0.6c0.6,0,1,0.2,1.3,0.5c0.7,0.8,0.7,1.6,0,2.4
+            c-1.8,1.6-4,2.5-6.5,2.4c-2.6,0-4.7-0.9-6.5-2.8c-1.7-1.8-2.6-4-2.7-6.6c0-2.6,0.9-4.8,2.7-6.6c1.7-1.8,3.8-2.7,6.3-2.7
+            c2.5,0,4.6,0.8,6.2,2.5c1.7,1.6,2.6,3.7,2.8,6.2V16.5z M20.4,11.2c-1.4,0.1-2.6,0.5-3.4,1.3c-0.9,0.8-1.4,1.7-1.6,2.6h10.5
+            c-0.2-0.9-0.8-1.7-1.8-2.5C23.1,11.8,21.9,11.3,20.4,11.2"/>
+            <path class="st1" d="M48.7,24.3c0,0.5-0.2,1-0.6,1.4c-0.4,0.4-0.9,0.6-1.4,0.6c-0.5,0-1-0.2-1.3-0.5c-0.4-0.3-0.6-0.7-0.7-1.1
+            c-1.6,1.1-3.2,1.6-5.1,1.6c-2.5,0-4.6-0.9-6.4-2.7c-1.8-1.8-2.6-4-2.6-6.6c0-2.6,0.9-4.7,2.6-6.6c1.8-1.8,3.9-2.8,6.4-2.8
+            c1.8,0,3.5,0.5,5,1.6v-7c0-0.6,0.2-1,0.6-1.4c0.4-0.4,0.9-0.6,1.4-0.6c0.6,0,1,0.2,1.4,0.6c0.4,0.4,0.6,0.9,0.6,1.4V24.3z
+            M39.7,22.3c1.4,0,2.5-0.5,3.5-1.6c1-1,1.5-2.3,1.5-3.7c0-1.4-0.5-2.7-1.5-3.7c-1-1-2.1-1.6-3.5-1.6c-1.4,0-2.6,0.5-3.5,1.6
+            c-1,1-1.5,2.3-1.5,3.7c0,1.4,0.5,2.7,1.5,3.7C37.1,21.7,38.3,22.3,39.7,22.3"/>
+            <path class="st1" d="M54.6,2.2V3c0,0.6-0.2,1.1-0.6,1.5C53.6,4.9,53.2,5,52.6,5c-0.6,0-1-0.2-1.4-0.6c-0.4-0.4-0.6-0.9-0.6-1.5
+            V2.2c0-0.5,0.2-1,0.6-1.4c0.4-0.4,0.9-0.6,1.4-0.6c0.6,0,1,0.2,1.4,0.6C54.4,1.2,54.6,1.6,54.6,2.2 M51.2,8.3
+            c0.4-0.4,0.9-0.6,1.4-0.6c0.6,0,1,0.2,1.4,0.6c0.4,0.4,0.6,0.9,0.6,1.5v14.6c0,0.6-0.2,1.1-0.6,1.4c-0.4,0.4-0.9,0.6-1.4,0.6
+            c-0.6,0-1-0.2-1.4-0.6c-0.4-0.4-0.6-0.9-0.6-1.4V9.8C50.6,9.2,50.8,8.7,51.2,8.3"/>
+            <path class="st1" d="M68.8,9.7c0.4,0.3,0.7,0.7,0.8,1.2c0.1,0.5,0,1-0.2,1.5c-0.3,0.4-0.7,0.7-1.2,0.8c-0.5,0.1-1,0-1.5-0.3
+            c-1.4-0.9-2.5-1.4-3.4-1.4c-0.9,0-1.6,0.2-2.2,0.7c-0.4,0.3-0.6,0.5-0.6,0.7c0,0.2,0,0.4,0.1,0.5c0.1,0.1,0.2,0.2,0.4,0.3
+            c0.5,0.4,1.4,0.7,2.7,0.9l0,0h0c1.3,0.2,2.5,0.6,3.6,1.1c1.1,0.5,1.9,1.2,2.4,2.1c0.5,0.9,0.8,1.7,0.8,2.6c0,1.7-0.8,3.2-2.3,4.3
+            c-1.4,1-3,1.5-4.8,1.5c-2.3,0-4.5-0.9-6.6-2.6c-0.4-0.3-0.6-0.8-0.7-1.3c-0.1-0.6,0.1-1,0.4-1.4c0.3-0.4,0.8-0.7,1.3-0.7
+            c0.6-0.1,1,0.1,1.4,0.4c1.3,1.1,2.7,1.7,4.1,1.6c0.9,0,1.8-0.2,2.5-0.7c0.4-0.4,0.7-0.7,0.7-1c0-0.3,0-0.4-0.1-0.5
+            c0-0.1-0.2-0.3-0.5-0.4c-0.6-0.4-1.6-0.8-3-1h0c-1.3-0.2-2.5-0.6-3.4-1.1c-1-0.5-1.8-1.2-2.4-2.1c-0.4-0.7-0.6-1.5-0.6-2.3
+            c0-1.6,0.7-3,2.2-4.1c1.3-0.9,2.9-1.4,4.6-1.4C65,7.7,66.8,8.4,68.8,9.7"/>
+            <path class="st0" d="M87.4,42.8c-0.3,0-0.6-0.3-0.6-0.6v-6.4c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v0.7
+            c0.5-0.6,1.4-1.3,2.7-1.3c0.3,0,0.6,0.3,0.6,0.6c0,0.3-0.3,0.6-0.6,0.6c-0.7,0-2.7,1.1-2.7,2.6l0,3.1C88,42.5,87.7,42.8,87.4,42.8
+            "/>
+            <path class="st0" d="M98.2,42.8c-2,0-3.7-1.7-3.7-3.8c0-2.1,1.7-3.8,3.7-3.8c1.9,0,3.5,1.5,3.7,3.5c0,0,0,0.1,0,0.1
+            c0,0.3-0.3,0.6-0.6,0.6h-5.5c0.2,1.3,1.2,2.2,2.5,2.2c0.8,0,1.6-0.4,2.1-1.2c0.1-0.1,0.2-0.2,0.4-0.3c0.2,0,0.3,0,0.5,0.1
+            c0.3,0.2,0.4,0.6,0.2,0.8C100.5,42.1,99.4,42.8,98.2,42.8 M95.8,38.2h4.7c-0.3-1-1.2-1.8-2.3-1.8C97.1,36.4,96.1,37.1,95.8,38.2"
+            />
+            <path class="st0" d="M112.2,42.8c-0.3,0-0.6-0.3-0.6-0.6v-0.4c-0.7,0.6-1.5,1-2.5,1c-2,0-3.7-1.7-3.7-3.8c0-2.1,1.6-3.8,3.7-3.8
+            c0.9,0,1.8,0.3,2.5,1v-3.4c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v9.4C112.8,42.5,112.5,42.8,112.2,42.8 M109.1,36.4
+            c-1.4,0-2.5,1.2-2.5,2.6c0,1.4,1.1,2.6,2.5,2.6c1.3,0,2.4-1.1,2.5-2.4v-0.2C111.5,37.5,110.4,36.4,109.1,36.4"/>
+            <path class="st0" d="M118,42.8c-0.3,0-0.6-0.3-0.6-0.6v-6.4c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v6.4
+            C118.6,42.5,118.3,42.8,118,42.8 M118,34.5c-0.3,0-0.6-0.3-0.6-0.6v-0.3c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v0.3
+            C118.6,34.2,118.3,34.5,118,34.5"/>
+            <path class="st0" d="M125.8,42.8c-1,0-1.9-0.4-2.8-1.1c-0.3-0.2-0.3-0.6-0.1-0.8c0.1-0.1,0.2-0.2,0.4-0.2c0.2,0,0.3,0,0.5,0.1
+            c0.7,0.5,1.4,0.8,2,0.8c0.5,0,0.9-0.1,1.2-0.4c0.3-0.2,0.4-0.4,0.4-0.7c0-0.2-0.1-0.4-0.4-0.7c-0.3-0.2-0.7-0.4-1.4-0.5
+            c0,0,0,0-0.1,0c-0.6-0.1-1.2-0.3-1.7-0.6c-0.5-0.3-0.9-0.9-0.9-1.5c0-0.6,0.3-1.2,0.9-1.6c0.5-0.3,1.1-0.5,1.9-0.5
+            c1,0,1.7,0.4,2.2,0.8c0.3,0.2,0.4,0.6,0.2,0.9c-0.2,0.3-0.5,0.4-0.8,0.2c-0.5-0.4-1-0.7-1.6-0.7c-0.5,0-0.9,0.1-1.2,0.3
+            c-0.2,0.2-0.4,0.4-0.4,0.6c0,0.2,0,0.3,0.3,0.5c0.3,0.2,0.7,0.3,1.3,0.4c0.7,0.1,1.3,0.3,1.8,0.6c0.6,0.4,0.9,1,0.9,1.7
+            c0,0.6-0.3,1.2-0.9,1.6C127.2,42.6,126.6,42.8,125.8,42.8"/>
+            <path class="st0" d="M62.9,42.8c-2,0-3.6-1.7-3.6-3.8c0-2.1,1.6-3.8,3.6-3.8c2,0,3.6,1.7,3.6,3.8C66.4,41.1,64.8,42.8,62.9,42.8
+            M62.9,36.4c-1.3,0-2.4,1.2-2.4,2.6c0,1.4,1.1,2.6,2.4,2.6c1.3,0,2.4-1.2,2.4-2.6C65.2,37.6,64.1,36.4,62.9,36.4"/>
+            <path class="st0" d="M70.7,42.8c-0.3,0-0.6-0.3-0.6-0.6v-5.9h-0.7c-0.3,0-0.6-0.3-0.6-0.6c0-0.3,0.3-0.6,0.6-0.6h0.7v-0.5
+            c0-0.9,0.2-1.4,0.5-1.8c0.4-0.4,0.9-0.6,1.6-0.6c0.3,0,0.6,0.3,0.6,0.6c0,0.3-0.3,0.6-0.6,0.6c-0.4,0-0.6,0.1-0.7,0.2
+            c-0.1,0.1-0.2,0.3-0.2,1v0.5h0.7c0.3,0,0.6,0.3,0.6,0.6c0,0.3-0.3,0.6-0.6,0.6h-0.7v5.9C71.3,42.5,71.1,42.8,70.7,42.8"/>
+            <path class="st0" d="M6.3,42.8c-0.3,0-0.6-0.3-0.6-0.6v-3.9c0-1.1-0.8-1.8-2-1.8c-1.1,0-2,0.8-2,1.8v3.9c0,0,0,0.6-0.6,0.6
+            c-0.6,0-0.6-0.6-0.6-0.6v-9.4c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v3.1c0.6-0.4,1.2-0.7,2-0.7c1.8,0,3.2,1.3,3.2,3v3.9
+            C7,42.5,6.7,42.8,6.3,42.8"/>
+            <path class="st0" d="M14.5,42.8c-2,0-3.6-1.7-3.6-3.8c0-2.1,1.6-3.8,3.6-3.8c2,0,3.6,1.7,3.6,3.8C18.1,41.1,16.5,42.8,14.5,42.8
+            M14.5,36.4c-1.3,0-2.4,1.2-2.4,2.6c0,1.4,1.1,2.6,2.4,2.6c1.3,0,2.4-1.2,2.4-2.6C16.9,37.6,15.8,36.4,14.5,36.4"/>
+            <path class="st0" d="M33,42.8c-0.3,0-0.6-0.3-0.6-0.6v-3.8c0-1.1-0.9-1.9-1.9-1.9c-1.1,0-1.9,0.9-1.9,1.9v3.8c0,0.1,0,0.1,0,0.1
+            c0,0,0,0,0,0.1c-0.1,0.2-0.2,0.3-0.3,0.3c-0.1,0.1-0.2,0.1-0.3,0.1h-0.1c0,0-0.1,0-0.1,0c-0.1,0-0.1,0-0.1-0.1
+            c-0.1,0-0.1-0.1-0.1-0.1c0,0,0,0,0,0c0,0-0.1-0.1-0.1-0.1c0,0,0,0,0,0c0,0,0,0,0-0.1c0,0,0-0.1,0-0.1v-3.9c0-1.1-0.9-1.9-1.9-1.9
+            c-1.1,0-1.9,0.9-1.9,1.9v3.8c0,0.2-0.1,0.4-0.3,0.5c0,0-0.1,0.1-0.2,0.1c0,0-0.1,0-0.1,0h-0.1c-0.3,0-0.5-0.2-0.5-0.4
+            c0,0,0-0.1,0-0.1v-6.5c0-0.3,0.3-0.6,0.6-0.6c0.3,0,0.6,0.3,0.6,0.6v0.1c0.5-0.4,1.2-0.7,1.9-0.7c1,0,1.9,0.5,2.5,1.3
+            c0.6-0.8,1.5-1.3,2.5-1.3c1.7,0,3.1,1.4,3.1,3.1v3.8C33.6,42.5,33.3,42.8,33,42.8"/>
+            <path class="st0" d="M41.5,42.8c-2,0-3.7-1.7-3.7-3.8c0-2.1,1.7-3.8,3.7-3.8c1.9,0,3.5,1.5,3.7,3.5c0,0,0,0.1,0,0.1
+            c0,0.3-0.3,0.6-0.6,0.6h-5.5c0.2,1.3,1.2,2.2,2.5,2.2c0.8,0,1.6-0.4,2.1-1.2c0.1-0.1,0.2-0.2,0.4-0.3c0.2,0,0.3,0,0.5,0.1
+            c0.3,0.2,0.4,0.6,0.2,0.8C43.9,42.1,42.8,42.8,41.5,42.8 M39.1,38.2h4.7c-0.3-1-1.2-1.8-2.3-1.8C40.4,36.4,39.5,37.1,39.1,38.2"/>
+          </g>
+        </g>
+      </svg>
+    </a>
+  </div> <!-- navbar-header -->
+  
+  <form class="navbar-form navbar-right" role="search">
+    <div class="input-group search-field">
+      <input id="search-query" class="form-control typeahead" type="text" placeholder="Search" autocomplete="off" data-provide="typeahead">
+      <span class="input-group-addon">
+        <i class="glyphicon glyphicon-search"></i>
+      </span>
+    </div>
+  </form>
+  
+</div> <!-- container-fluid -->
+</div> <!-- navbar -->
+{% endblock %}
+
+<!-- Hub heading -->
+<div class="row heading" style="background: url({{url_for('.static', filename='images/heading-bg.jpg')}});">
+  <h1>Redis Modules Hub</h1>
+</div>
+
+<!-- Hub intro text -->
+<div class="container">
+  <div class="row">
+    <p>
+      Redis Modules are add-ons to Redis which extend Redis to cover most of the popular use cases for any industry. They seamlessly plug into ​Redis, processed in-memory and provide Redis’ simplicity, super high performance, scalability and high availability.
+    </p>
+    <p>
+      Modules can be created by anyone. Similarly to the <a target="_blank" href="https://redis.io/modules">Open Source Redis Modules page</a>, the Modules Hub features OSI licensed modules created by Redis Labs and others.
+    </p>
+    <p>
+      The Modules Hub is an <a target="_blank" href="https://github.com/RedisLabs/rmhub">open source project</a> that's 100%-powered with Redis and Redis Modules.
+    </p>
+    <p>
+      <a href="#" data-toggle="modal" data-target="#modalUsingModules">
+        <i class="octicon octicon-question" aria-hidden="true"></i> Using Redis Modules
+      </a><br />
+      <a href="#" data-toggle="modal" data-target="#modalDevelopingModules">
+        <i class="octicon octicon-question" aria-hidden="true"></i> Developing Redis Modules
+      </a><br />
+      <a href="#" data-toggle="modal" data-target="#modalCertifiedModules">
+        <i class="octicon octicon-question" aria-hidden="true"></i> Certified Redis Modules <span class="octicon octicon-verified module-certified" aria-hidden="true"></span>
+      </a>  
+    </p>
+    <p class="text-center">
+      <button type="button" class="btn btn-default btn-lg btn-submit" data-toggle="modal" data-target="#modalSubmit">
+        Submit a module
+      </button>
+    </p>
+  </div> <!-- row -->
+</div> <!-- container-fluid -->
+
+<!-- Using modules modal dialog -->
+<div class="modal fade" id="modalUsingModules" tabindex="-1" role="dialog" aria-labelledby="modalUsingRedisModulesLabel" data-remote="moar/Using%20Redis%20Modules">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<!-- Developing modules modal dialog -->
+<div class="modal fade" id="modalDevelopingModules" tabindex="-1" role="dialog" aria-labelledby="modalDevelopingRedisModulesLabel" data-remote="moar/Developing%20Redis%20Modules">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<!-- Certified modules modal dialog -->
+<div class="modal fade" id="modalCertifiedModules" tabindex="-1" role="dialog" aria-labelledby="modalCertifiedRedisModulesLabel" data-remote="moar/Certified%20Redis%20Modules">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<!-- Submit module modal dialog -->
+<div class="modal fade" id="modalSubmit" tabindex="-1" role="dialog" aria-labelledby="modalSubmitLabel" style="top: 60px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalSubmitLabel">Submit a Module</h4>
+      </div>
+      
+      <form id="formSubmitModule" method="post" role="form">
+        <div class="modal-body">
+          <div class="help-block">
+            By filling the form below and clicking the <strong>Submit</strong> button, you'll be creating a pull request in this website's repository.
+          </div>
+          <div class="form-group">
+            <label for="modulerepo">Repository</label>
+            <div class="input-group">
+              <span class="input-group-addon" id="repo_addon">github.com/</span>
+              <input type="text" class="form-control" id="modulerepo" name="repoid" placeholder="owner/repository" aria-describedby="repo_addon" pattern="[a-z0-9._-]+/[a-z0-9._-]+" maxlength="255" required>
+            </div>
+            <label for="moduleauthor">Author</label>
+            <div class="input-group">
+              <span class="input-group-addon" id="author_addon">github.com/</span>
+              <input type="text" class="form-control" id="moduleauthor" name="authorid" placeholder="" aria-describedby="author_addon" pattern="[a-z0-9._-]+" maxlength="255">
+            </div>
+            <span class="help-block"><small><em>Leave empty if the same as module</em></small></span>
+            <label for="moduleicon">Icon</label>
+            <input type="url" class="form-control" id="moduleicon" name="icon" placeholder="http://acme.com/foobar.svg" maxlength="255">
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <div class="flex-submit-container">
+            <div id="submitResult" class="submit-result">
+              <div id="submitProgress" class="progress submit-progress" style="display: none;">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                  <span class="sr-only">Submitting module</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex-submit-buttons-container">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </div> <!-- flex-submit-container -->
+        </div> <!-- modal-footer -->
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Submit module result modal dialog -->
+<div class="modal fade" id="modalSubmitDone" tabindex="-1" role="dialog" aria-labelledby="modalSubmitDoneLabel" style="top: 60px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalSubmitDoneLabel">Module submitted</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Results header -->
+<div class="container">
+  <div class="row">
+    <div class="flex-container">
+      <div id="results-meta"></div>
+      <div class="flex-options-container">
+        <label class="lbl-display" for="btngrpLayout">Layout</label>
+        <div id="btngrpLayout" class="btn-group" role="group" aria-label="Layout options">
+          <button id="btnLayoutList" type="button" class="btn btn-default" role="list"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></button>
+          <button id="btnLayoutGrid" type="button" class="btn btn-default" role="grid"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></button>
+        </div>
+        <label class="lbl-display" for="btnGrpSort">Sort by</label>
+        <div id="btnGrpSort" class="btn-group">
+          <button id="btnSort" type="button" class="btn btn-default btn-sort dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="update">
+            Last update <span class="caret caret-right" aria-hidden="true"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li id="btnoptName" class="btnoptSort" role="name"><a href="#">Name</a></li>
+            <li id="btnoptUpdate" class="btnoptSort" role="update"><a href="#">Last update</a></li>
+            <li id="btnoptStars" class="btnoptSort" role="stars"><a href="#">Stars</a></li>
+            <li id="btnoptForks" class="btnoptSort" role="forks"><a href="#">Forks</a></li>
+          </ul>
+        </div>
+      </div> <!-- >flex-options-container -->
+    </div> <!-- flex-container -->
+  </div> <!-- row -->
+</div> <!-- container -->
+
+<!-- MODULES! MODULES! MODULES! -->
+{% block content %}
+<div id="modules-list" class="container">
+</div> <!-- container modules-list -->
+{% endblock %}
+
+<footer class="footer">
+  <div class="container-fluid text-center copyright">
+    <span>&copy; 2017 Redis Labs, Inc. All rights reserved.</span>
+  </div>
+</footer>
+
+{% block scripts %}
+{{super()}}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"></script>
+<!-- bootstrap3-typeahead is taken from the source because the official 4.0.2 is buggy -->
+<script type="text/javascript" src="{{url_for('.static', filename='scripts/bootstrap3-typeahead.js')}}" /></script>
+<script type="text/javascript" src="{{url_for('.static', filename='scripts/majik.js')}}" /></script>
+<!-- TODO: Google Analytics -->
+
+<script id="modules-template" type="text/x-handlebars-template">
+  {% raw %}
+  {{#each modules}}
+  <div class="row row-module">
+    <div class="flex-container">
+      
+      <div class="flex-icon-container">
+        {{#if icon}}
+        <img class="module-icon" src="/static/images/{{icon}}" />
+        {{else}}
+        <img class="module-icon" src="/static/images/module-icon.svg" />
+        {{/if}}
+      </div> <!-- flex-icon-container -->
+      
+      <div class="flex-module-container">
+        
+        <div class="flex-info-container">
+          <div class="module-info">
+            <h2 class="module-name">
+              {{name}}
+              {{#if certified}}
+              <i class="octicon octicon-verified module-certified" data-toggle="tooltip" title="Certified module" aria-hidden="true"></i>
+              {{/if}}
+            </h2>
+            <p class="module-desc">
+              {{description}}
+            </p>
+            <p class="module-line">
+              License: {{license}}
+              {{#if enterprise}}
+              and included with <a target="_blank" href="https://redislabs.com/why-redis/redis-enterprise/"><span class="redisefont">redis<sup>e</sup></span></a>
+              {{/if}}
+            </p>
+            
+            {{#if repository}}
+            <p class="module-line">
+              Repository: {{link repository}}
+            </p>
+            {{/if}}
+            
+            {{#if documentation}}
+            <p class="module-line">
+              Documentation: <a target="_blank" href="{{documentation}}">{{documentation}}</a>
+            </p>
+            {{/if}}
+            
+            {{#if authors}}
+            <p class="module-line">
+              Authors:
+              {{#each authors}}
+              {{link this}}
+              {{/each}}
+            </p>
+            {{/if}}
+          </div> <!-- module-info -->
+        </div> <!-- flex-info-container -->
+        
+        <div class="flex-stats-container">
+          {{#if stats}}
+          <div class="flex-badges-container">
+            {{starsbadge stats.stargazers_count}}
+            {{forksbadge stats.forks_count}}
+          </div> <!-- flex-badges-container -->
+          
+          <div class="flex-data-container">
+            {{releaseinfo stats.last_release}}
+            {{updateinfo stats.last_modified}}
+          </div> <!-- flex-data-container -->
+          {{/if}}
+        </div> <!-- flex-stat-container -->
+      </div> <!-- flex-module-container -->
+    </div> <!-- flex-container -->
+  </div> <!-- row -->
+  {{/each}}
+  {% endraw %}
+</script> <!-- module-template -->
+
+<script type="text/javascript" charset="utf-8">
+  
+  $( document ).ready( function() {
+    
+    // Load settings
+    var sort = CookieGet('sort', 'name');
+    var layout = CookieGet('layout', 'list');
+    
+    // Bindings
+    // Listen to clicks on the display layout button
+    $( "#btngrpLayout .btn" ).click(function(e) {
+      e.preventDefault();
+      setDisplayLayout($(this).attr('role'));
+    });
+    
+    // Listen to clicks on the sort button
+    $( ".btnoptSort" ).click( function(e) {
+      e.preventDefault();
+      setDisplaySort($(this).attr('role'));
+    });
+    
+    // Handle "Subit module" form submit event
+    $( "#formSubmitModule" ).on('submit', submitModule);
+    
+    // Create the suggestions engine
+    var searchSuggestions = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/sugget/%QUERY',
+        wildcard: '%QUERY',
+      }
+    });
+    searchSuggestions.initialize();
+    
+    // Set up the search box for autocompletion
+    $searchQuery = $( "#search-query" );
+    $searchQuery.typeahead({
+      source: searchSuggestions.ttAdapter(),
+      minLength: 2,
+      items: 'all',
+      autoSelect: true,
+      showHintOnFocus: 'all',
+      updater: function(item) {
+        console.log('Updater: ' + item);
+        return item;
+      },
+      afterSelect: function(selected) {
+        console.log('Selected: ' + selected);
+        getModulesListing(selected);
+      }
+    });
+    
+    // Finalize page setup
+    setDisplayLayout(layout);
+    setDisplaySort(sort);
+    
+  });
+  
+</script>
+{% endblock %}
+
+{% endblock %}

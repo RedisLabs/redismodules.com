@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.redis
-    image: redismodules.com-redis
+    image: rmhub-redis
     ports:
      - 6379:6379
 
@@ -13,9 +13,9 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.app
-    image: redismodules.com-app
+    image: rmhub-app
     env_file: docker-compose.env
-    command: bash start_scheduler.sh
+    command: bash bin/start_scheduler.sh
     links:
       - redis
     depends_on:
@@ -25,9 +25,9 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.app
-    image: redismodules.com-app
+    image: rmhub-app
     env_file: docker-compose.env
-    command: bash start_worker.sh
+    command: bash bin/start_worker.sh
     links:
       - redis
     depends_on:
@@ -37,9 +37,9 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.web
-    image: redismodules.com-web
+    image: rmhub-web
     env_file: docker-compose.env
-    command: bash start_web.sh
+    command: bash bin/start_web.sh
     ports:
       - 8000:8000
     links:
