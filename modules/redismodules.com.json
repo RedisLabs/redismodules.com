@@ -1,0 +1,12 @@
+{
+    "license": null,
+    "name": "redismodules.com",
+    "repository": {
+        "url": "https://github.com/redislabs/redismodules.com",
+        "type": "github",
+        "id": "redislabs/redismodules.com"
+    },
+    "documentation": null,
+    "authors": [],
+    "description": "The repository of redismodules.com"
+}
