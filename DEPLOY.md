@@ -1,6 +1,13 @@
-# Deploying to AWS
+# Deploying
 
-## Prerequirements:
+
+Setup:
+Github token needs to have access to public repos
+Repo needs to have 'submission' and 'certification' labels
+
+## To AWS
+
+### Prerequirements:
 * `pip install awscli --upgrade`
 * http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI_installation.html
 

@@ -170,11 +170,6 @@ function setDisplaySort(sort) {
 * -----
 */
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
 // Updates submit module alert
 // W/o arguments cleans everything
 function submitModuleError(xhr, status, err) {
@@ -190,6 +185,17 @@ function submitModuleError(xhr, status, err) {
         $( "#submitResult .alert" )
         .remove();
     }
+}
+
+// Updates submit module alert
+// W/o arguments cleans everything
+function submitModuleSuccess(msg) {
+    $( "#submitProgress" ).hide();
+    $( "#formSubmitModule :submit" ).removeClass('disabled');
+    $( "#submitResult .alert" )
+        .remove();
+    $( "#submitResult" )
+        .append('<div class="alert alert-success submit-alert" role="alert">' + msg + '</div>');
 }
 
 function submitModulePoll(data) {
@@ -214,13 +220,11 @@ function submitModulePoll(data) {
         $( "#formSubmitModule :submit" ).removeClass('disabled');
         $( "#submitResult .alert" )
             .remove();
-        $( "#submitResult" )
-            .append('<div class="alert alert-success submit-alert" role="alert">' +
-                        'Module submitted - track the submission via ' +
-                        '<a target="_blank" href="' + data.pull_url + '">' +
-                             'pull request #' + data.pull_number +
-                        '</a>' +
-                    '</div>');
+        submitModuleSuccess(
+            'Module submitted - track the submission via ' +
+            '<a target="_blank" href="' + data.pull_url + '">' +
+                'pull request #' + data.pull_number +
+            '</a>');
     }
 }
 

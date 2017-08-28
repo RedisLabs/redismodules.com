@@ -36,7 +36,8 @@ def startTheWebz():
 @app.route('/')
 @cache.cached(timeout=0)
 def handle_homepage():
-    return render_template('index.html')
+    repo_url = hub.get_repo_url()
+    return render_template('index.html', repo_url=repo_url)
 
 @app.route('/moar/<string:topic>')
 @cache.cached(timeout=0)

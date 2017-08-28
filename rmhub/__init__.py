@@ -41,12 +41,13 @@ class Hub(object):
     qconn = None   # queue connection
     gh = None
     autocomplete = None
+    repo = None
     _ts = None
     _hubkey = 'hub:catalog'
     _ixname = 'ix'
     _acname = 'ac'
 
-    def __init__(self, ghlogin_or_token=None, docs_url=None, search_url=None, queue_url=None):
+    def __init__(self, ghlogin_or_token=None, docs_url=None, search_url=None, queue_url=None, repo=None):
         timestamp = datetime.utcnow()
         logger.info('Initializing temporary hub {}'.format(timestamp))
 
@@ -84,6 +85,15 @@ class Hub(object):
             queue_url = docs_url
         self.qconn = StrictRedis.from_url(queue_url)
 
+        if repo:
+            pass
+        elif 'REDISMODULES_REPO' in os.environ:
+            repo = os.environ['REDISMODULES_REPO']
+        else:
+            logger.critical('No REDISMODULES_REPO... bye bye.')
+            raise RuntimeError('No REDISMODULES_REPO... bye bye.')
+        self.repo = repo
+
         # Check if hub exists
         if self.dconn.exists(self._hubkey):
             self._ts = datetime.fromtimestamp(float(self.dconn.jsonget(self._hubkey, Path('.created'))))
@@ -92,7 +102,10 @@ class Hub(object):
             self._ts = timestamp
             logger.info('Creating hub {}'.format(self._ts))
             self.createHub()
-            self.addModulesRepo(os.environ['REDISMODULES_REPO'])
+            self.addModulesRepo(self.repo)
+
+    def get_repo_url(self):
+        return 'https://github.com/{}'.format(self.repo)
 
     def createHub(self):
         logger.info('Creating the hub in the database {}'.format(self._ts))
@@ -102,6 +115,7 @@ class Hub(object):
             'created': str(_toepoch(self._ts)),
             'modules': {},
             'submissions': [],
+            'submit_enabled': False
         })
 
         # Create a RediSearch index for the modules
@@ -188,6 +202,10 @@ class Hub(object):
             'status': 'failed'
         }
 
+        if not self.dconn.jsonget(self._hubkey, Path('submit_enabled')):
+            res['message'] = 'Module submission is currently disabled'
+            return res            
+
         # Check if the module is already listed
         m = RedisModule(self.dconn, self.sconn, self.autocomplete, repo_id)
         if m.exists:
@@ -249,7 +267,7 @@ class Hub(object):
         logger.info('Processing submision for {}'.format(repo_id))
         submission = Submission(self.dconn, repo_id)
         if submission.exists:
-            return submission.process(self.gh)
+            return submission.process(self.gh, self.repo)
 
     def viewModules(self, query=None, sort=None):
         if not query:
@@ -396,7 +414,7 @@ class Submission(ReJSONObject):
         self.status = status
         self.message = message
 
-    def process(self, gh):
+    def process(self, gh, hubrepo):
         logger.info('Submission {} processing started'.format(self._repo_id))
         # TODO: should this be broken to littler steps?
         details = self.details
@@ -445,7 +463,7 @@ class Submission(ReJSONObject):
             mod['icon'] = details['icon_url']
 
         # Submit to Github as a pull request
-        ghrepo = gh.get_repo(os.environ['REDISMODULES_REPO'])
+        ghrepo = gh.get_repo(hubrepo)
         ghdefault = ghrepo.get_branch(ghrepo.default_branch)
 
         # Get the branch for the submission

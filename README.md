@@ -1,7 +1,10 @@
-# redismoudles.com
+The source (of truth) for redismodules.com
 
-Source for the website
+This is the application that runs at http://redismodules.com. Its primary purpose is to serve as a showcase for Redis Modules.
 
-Setup:
-Github token needs to have access to public repos
-Repo needs to have 'submission' and 'certification' labels
+The application itself uses Redis extensively, including:
+
+- as a cache
+- as a job queue
+- as a search and autocompletion engine
+- as a document store

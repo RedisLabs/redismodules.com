@@ -6,6 +6,5 @@ Certification requirements:
 
 - Documentation
 - Tests
-- TBD
 
-Certification is currently free of charge. Redis Labs may refuse to certify a module .... TBD
+Certification is currently free of charge.
