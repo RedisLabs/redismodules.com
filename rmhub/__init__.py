@@ -275,7 +275,9 @@ class Hub(object):
             query = '-etaoinshrdlu'
         q = Query(query).no_content().paging(0, 1000)
         if sort:
-            if sort == 'update':
+            if sort == 'relevance':
+                pass
+            elif sort == 'update':
                 q.sort_by('last_modified')
             elif sort == 'stars':
                 q.sort_by('stargazers_count', asc=False)
@@ -580,31 +582,51 @@ class RedisModule(ReJSONObject):
 
     def updateStats(self, gh):
         # github.enable_console_debug_logging()
-        repo = self.repository
+        repository = self.repository
 
-        if repo and \
-            'type' in repo and repo['type'] == 'github' and \
-            'id' in repo:
+        if repository and \
+            'type' in repository and repository['type'] == 'github' and \
+            'id' in repository:
 
-            logger.info('Fetching stats for {}'.format(repo['id']))
-            grepo = gh.get_repo(repo['id'])
+            logger.info('Fetching stats for {}'.format(repository['id']))
+            repo = gh.get_repo(repository['id'])
+            # Basic repository stats
             stats = {
-                'stargazers_count': grepo.stargazers_count,
-                'forks_count': grepo.forks_count,
-                'last_modified': (datetime.today() - grepo.pushed_at).days  # TODO: take last push from default branch
+                'stargazers_count': repo.stargazers_count,
+                'forks_count': repo.forks_count,
+                'last_modified': (datetime.today() - repo.pushed_at).days
             }
 
-            rel = grepo.get_releases()
+            # The relevance score of a module
+            score = 0.0
+            # It has to be fresh
+            if stats['last_modified'] < 100:
+                score += 0.70 * ((100 - stats['last_modified'])/100.0)
+            # with peeps adoring it
+            if stats['stargazers_count'] < 637:
+                score += 0.20 * (stats['stargazers_count']/637.0)
+            else:
+                score += 0.20
+            # and some developer interest
+            if stats['forks_count'] < 10:
+                score += 0.10 * (stats['forks_count']/10.0)
+            else:
+                score += 0.10
+
+            # Last release, if exists
+            rel = repo.get_releases()
             try:
                 stats['last_release'] = {
                     'name': rel[0].tag_name,
                     'url': rel[0].url
                 }
-            except IndexError:      # No releases
+            except IndexError: # No releases
                 pass
 
         self.stats = stats
-        self._sconn.add_document(self._doc_id, nosave=True, replace=True, name=self.name, description=self.description, **stats)
+        self._sconn.add_document(self._doc_id,
+            nosave=True, replace=True,
+            score=score, name=self.name, description=self.description, **stats)
 
 """
 Exported Functions

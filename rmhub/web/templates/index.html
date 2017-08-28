@@ -257,10 +257,11 @@
             Last update <span class="caret caret-right" aria-hidden="true"></span>
           </button>
           <ul class="dropdown-menu">
-            <li id="btnoptName" class="btnoptSort" role="name"><a href="#">Name</a></li>
+            <li id="btnoptRelevance" class="btnoptSort" role="relevance"><a href="#">Relevance</a></li>
             <li id="btnoptUpdate" class="btnoptSort" role="update"><a href="#">Last update</a></li>
             <li id="btnoptStars" class="btnoptSort" role="stars"><a href="#">Stars</a></li>
             <li id="btnoptForks" class="btnoptSort" role="forks"><a href="#">Forks</a></li>
+            <li id="btnoptName" class="btnoptSort" role="name"><a href="#">Name</a></li>
           </ul>
         </div>
       </div> <!-- >flex-options-container -->
@@ -404,7 +405,7 @@
     });
     
     // Load settings
-    var sort = CookieGet('sort', 'name');
+    var sort = CookieGet('sort', 'relevance');
     var layout = CookieGet('layout', 'list');
 
     // Finalize page setup

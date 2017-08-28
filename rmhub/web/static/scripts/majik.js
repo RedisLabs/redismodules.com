@@ -113,8 +113,8 @@ function getModulesListing(query) {
         var template = Handlebars.compile(source);
         var html = template(data);
         $( "#modules-list" )
-        .empty()
-        .append(html);
+            .empty()
+            .append(html);
         
         // opt-in for tooltips
         $('[data-toggle="tooltip"]').tooltip();

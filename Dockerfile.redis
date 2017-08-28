@@ -20,6 +20,7 @@ RUN make
 WORKDIR /
 
 CMD redis-server \
+    --maxmemory 668886630 \
     --save "" \
     --loadmodule /modules/RediSearch-master/src/redisearch.so \
     --loadmodule /modules/rejson-master/src/rejson.so
