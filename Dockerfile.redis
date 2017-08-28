@@ -8,20 +8,18 @@ RUN apt-get install -y \
 WORKDIR /modules
 RUN wget -O RediSearch.zip https://github.com/RedisLabsModules/RediSearch/archive/master.zip
 RUN unzip RediSearch
-RUN mv RediSearch-master RediSearch
 RUN wget -O ReJSON.zip https://github.com/RedisLabsModules/ReJSON/archive/master.zip
 RUN unzip ReJSON
-RUN mv rejson-master ReJSON
 
-WORKDIR /modules/RediSearch
+WORKDIR /modules/RediSearch-master
 RUN make
 
-WORKDIR /modules/ReJSON
+WORKDIR /modules/rejson-master
 RUN make
 
 WORKDIR /
 
 CMD redis-server \
     --save "" \
-    --loadmodule /modules/RediSearch/src/redisearch.so \
-    --loadmodule /modules/ReJSON/src/rejson.so
+    --loadmodule /modules/RediSearch-master/src/redisearch.so \
+    --loadmodule /modules/rejson-master/src/rejson.so

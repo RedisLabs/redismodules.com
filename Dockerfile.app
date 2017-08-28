@@ -7,6 +7,8 @@ RUN apt-get install -y \
 RUN pip install --upgrade pip
 
 WORKDIR /rmhub
-ADD . /rmhub
+ADD ./requirements.txt /rmhub/requirements.txt
+RUN pip install -r requirements.txt
 
+ADD . /rmhub
 RUN pip install .

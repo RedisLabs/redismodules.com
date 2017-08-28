@@ -1,19 +1,11 @@
-version: '2.1'
+version: '2'
 
 services:
   redis:
-    build:
-      context: ./
-      dockerfile: Dockerfile.redis
-    image: rmhub-redis
-    ports:
-     - 6379:6379
+    image: 726902207197.dkr.ecr.us-east-1.amazonaws.com/rmhub-redis:latest
 
   scheduler:
-    build:
-      context: ./
-      dockerfile: Dockerfile.app
-    image: rmhub-app
+    image: 726902207197.dkr.ecr.us-east-1.amazonaws.com/rmhub-app:latest
     env_file: docker-compose.env
     command: bash bin/start_scheduler.sh
     links:
@@ -22,10 +14,7 @@ services:
       - redis
 
   worker:
-    build:
-      context: ./
-      dockerfile: Dockerfile.app
-    image: rmhub-app
+    image: 726902207197.dkr.ecr.us-east-1.amazonaws.com/rmhub-app:latest
     env_file: docker-compose.env
     command: bash bin/start_worker.sh
     links:
@@ -34,14 +23,11 @@ services:
       - redis
 
   web:
-    build:
-      context: ./
-      dockerfile: Dockerfile.web
-    image: rmhub-web
+    image: 726902207197.dkr.ecr.us-east-1.amazonaws.com/rmhub-web:latest
     env_file: docker-compose.env
     command: bash bin/start_web.sh
     ports:
-      - 8000:8000
+      - 80:8000
     links:
       - redis
     depends_on:
