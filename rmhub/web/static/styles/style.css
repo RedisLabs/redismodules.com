@@ -132,6 +132,11 @@ a {
     justify-content: flex-end;
 }
 
+.submit-alert {
+    text-align: left;
+    margin-bottom: 0px;
+}
+
 .flex-options-container {
     display: flex;
     padding-bottom: 0.5em;

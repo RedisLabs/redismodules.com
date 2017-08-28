@@ -158,7 +158,9 @@ function setDisplaySort(sort) {
     
     // set value and text of sort button to selected option
     $( "#btnSort" ).val(sort);
-    $( "#btnSort" ).text( $( optclass ).text() ).append( $( '<span class="caret caret-right" aria-hidden="true"></span>' ) );
+    $( "#btnSort" )
+        .text( $( optclass ).text() )
+        .append( $( '<span class="caret caret-right" aria-hidden="true"></span>' ) );
     
     // refresh listings
     getModulesListing();
@@ -172,49 +174,65 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+// Updates submit module alert
+// W/o arguments cleans everything
 function submitModuleError(xhr, status, err) {
-    $( "#submitProgress" ).hide();
-    $( "#submitResult" )
-        .empty()
-        .append('<div class="alert alert-danger" role="alert">Borked: ' + err + '</div>');
+    // TODO: betterize
+    if (err) {
+        $( "#submitProgress" ).hide();
+        $( "#formSubmitModule :submit" ).removeClass('disabled');
+        $( "#submitResult .alert" )
+            .remove();
+        $( "#submitResult" )
+            .append('<div class="alert alert-danger submit-alert" role="alert">' + err + '</div>');
+    } else {
+        $( "#submitResult .alert" )
+        .remove();
+    }
 }
 
 function submitModulePoll(data) {
-    console.log(data)
-    if ('queued' == data.status || 'started' == data.status) {
+    if ('failed' != data.status && 'finished' != data.status) {
         return setTimeout(function() {
+            $( "#submitProgress .progress-bar" )
+                .text(data.message + '...');
             $.ajax({
                 type: "GET",
                 url: "submit",
-                data: { 'jobid': data.jobid },
+                data: { 'id': data.id },
                 success: submitModulePoll,
                 error: submitModuleError
             })
          }, 1000);
-    }
-    if ('failed' == data.status) {
+    } else if ('failed' == data.status) {
         submitModuleError(null, null, data.message);
-    }
-    if ('finished' == data.status) {
+    } else if ('finished' == data.status) {
         $( "#submitProgress" ).hide();
-        $( "#modalSubmit" ).modal('hide');
-        $( "#modalSubmitDone .modal-body")
-            .empty()
-            .append(
-                '<a target="_blank" href="' +
-                data.url + '">Track pull request #' +
-                data.pull + '</a>');
-        $( "#modalSubmitDone" ).modal('show');
+        $( "#submitProgress .progress-bar" )
+            .text('');
+        $( "#formSubmitModule :submit" ).removeClass('disabled');
+        $( "#submitResult .alert" )
+            .remove();
+        $( "#submitResult" )
+            .append('<div class="alert alert-success submit-alert" role="alert">' +
+                        'Module submitted - track the submission via ' +
+                        '<a target="_blank" href="' + data.pull_url + '">' +
+                             'pull request #' + data.pull_number +
+                        '</a>' +
+                    '</div>');
     }
 }
 
 function submitModule(e) {
     e.stopPropagation();
     if (e.isDefaultPrevented()) {
-        console.log('Invalid form input?!?');
+        submitModuleError(null, null, 'Invalid form input');
         return;
     } else {
         e.preventDefault();
+        submitModuleError();    // clear residuals
+        $( "#formSubmitModule :submit" ).addClass('disabled');
         $( "#submitProgress" ).show();
         $.ajax({
             type: "POST",
@@ -233,8 +251,44 @@ function submitModule(e) {
 function CookieGet(name, defaultval) {
     var s = Cookies.get(name);
     if (s == undefined) {
-      s = defaultval;
-      Cookies.set(name, s);
+        s = defaultval;
+        Cookies.set(name, s);
     }
     return s;
+}
+
+/* General
+* --------
+*/
+function init() {
+    // Bindings
+    // Listen to clicks on the display layout button
+    $( "#btngrpLayout .btn" ).click(function(e) {
+        e.preventDefault();
+        setDisplayLayout($(this).attr('role'));
+    });
+  
+    // Listen to clicks on the sort button
+    $( ".btnoptSort" ).click( function(e) {
+    e.preventDefault();
+    setDisplaySort($(this).attr('role'));
+    });
+      
+    // Handle "Subit module" form submit event
+    $( "#formSubmitModule" ).on('submit', submitModule);
+  
+    // Create modal dialogs
+    $( "#intro #modals a" )
+    .each(function(index) {
+        var lbl = $( this ).text().replace(/\s/g, '');
+        var uri = encodeURIComponent($( this ).text().trim());
+        $( "#intro #modals" ).after(
+            '<div class="modal fade" id="modal' + lbl + '" tabindex="-1" role="dialog" aria-labelledby="modal' + 
+             lbl + 'Label" data-remote="moar/' + uri + '">' +
+                '<div class="modal-dialog modal-lg" role="document">' +
+                    '<div class="modal-content"></div>' +
+                '</div>' +
+            '</div>'
+        );
+    });
 }

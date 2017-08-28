@@ -101,8 +101,7 @@ class Hub(object):
         {
             'created': str(_toepoch(self._ts)),
             'modules': {},
-            'submissions': {},
-            'submitfails': [],
+            'submissions': [],
         })
 
         # Create a RediSearch index for the modules
@@ -122,24 +121,24 @@ class Hub(object):
     def addModule(self, mod):
         logger.info('Adding module to hub {}'.format(mod['name']))
         # Store the module object as a document
-        m = RedisModule(self, mod['name'])
-        m.load(mod)
+        m = RedisModule(self.dconn, self.sconn, self.autocomplete, mod['name'])
+        m.save(mod)
 
         # Add a reference to it in the master catalog
-        self.dconn.jsonset(self._hubkey, Path('.modules["{}"]'.format(mod['name'])), 
+        self.dconn.jsonset(self._hubkey, Path('.modules["{}"]'.format(m.get_id())), 
         {
-            'id': m.docId,
-            'key': m.docKey,
+            'id': m.get_id(),
+            'key': m.get_key(),
             'created': str(_toepoch(self._ts)),
         })
 
-        # Schedule a job to refresh repository statistics, starting from now and every 4 hours
+        # Schedule a job to refresh repository statistics, starting from now and every hour
         s = Scheduler(connection=self.qconn)
         job = s.schedule(
-            scheduled_time=self._ts,
+            scheduled_time=datetime(1970,1,1),
             func=callRedisModuleUpateStats,
-            args=[m.docId],
-            interval=60*60,     # every hour hours
+            args=[m.get_id()],
+            interval=60*60,     # every hour
             repeat=None,        # indefinitely
             ttl=0,
             result_ttl=0
@@ -148,7 +147,7 @@ class Hub(object):
 
     """
     Adds modules to the hub from a local directory
-    TODO: deprecate
+    TODO: deprecate asap
     """
     def addModulesPath(self, path):
         logger.info('Loading modules from local path {}'.format(path))
@@ -180,209 +179,79 @@ class Hub(object):
     """
     Submits a module to the hub
     """
-    def submitModule(self, repo_id, author=None, icon_url=None):
+    def submitModule(self, repo_id, **kwargs):
         logger.info('Module submitted to hub {}'.format(repo_id))
+        repo_id = repo_id.lower()
         ts = datetime.utcnow()
         res = {
+            'id': repo_id,
             'status': 'failed'
         }
 
         # Check if the module is already listed
-        if self.dconn.jsontype(self._hubkey, Path('.modules["{}"]'.format(repo_id))):
+        m = RedisModule(self.dconn, self.sconn, self.autocomplete, repo_id)
+        if m.exists:
+            # TODO: return in search results
             res['message'] = 'Module already listed in the hub'
             return res
 
         # Check if there's an active submission, or if the failure was too recent
-        # TODO: need a way to return None if Response is key doesn't exist
-        if self.dconn.jsontype(self._hubkey, Path('.submissions["{}"]'.format(repo_id))):
-            submission = self.dconn.jsonget(self._hubkey, Path('.submissions["{}"]'.format(repo_id)))
-            if submission['status'] != 'failed':
-                res['message'] = 'Module already submitted to the hub'
+        submission = Submission(self.dconn, repo_id)
+        if submission.exists:
+            status = submission.status
+            if status != 'failed':
+                res['status'] = 'active'
+                res['message'] = 'Active submission found for module'
                 return res
             else:
-                # TODO: transactionalize
-                self.dconn.jsonarrappend(self._hubkey, Path('.submitfails'), submission)
-                self.dconn.jsondel(self._hubkey, Path('.submissions["{}"]'.format(repo_id)))
+                # TODO: handle failed submissions
+                res['message'] = 'Module already submitted to the hub and had failed, please reset manually for now'
+                return res
 
-        # Store the new submission in a sub document
-        submission = {
-            'created': _toepoch(ts),
-            'id': repo_id,
-            'status': 'queued',
-            'details': {
-                'name': repo_id.split('/')[1],
-                'repository': repo_id,
-                'authors': [ author ],
-                'icon_url': icon_url,
-            }
-        }
-        # TODO: should be transactionalized?
-        self.dconn.jsonset(self._hubkey, Path('.submissions["{}"]'.format(repo_id)), submission)
+        # Store the new submission
+        submission.save(**kwargs)
+
+        # Record the submission in the catalog
+        # TODO: find a good use for that, e.g. 5 last submissions
+        self.dconn.jsonarrappend(self._hubkey, Path('.submissions'), {
+            'id': submission.get_id(),
+            'created': submission.created,
+        })
 
         # Add a job to process the submission
         q = Queue(connection=self.qconn)
-        job = q.enqueue(callProcessModuleSubmission, repo_id)
+        job = q.enqueue(callProcessSubmission, submission.get_id())
         if job is None:
             res['message'] = 'Submission job could not be created'
             # TODO: design retry path
-            logger.error('Could not create submission processing job for {}'.format(repo_id))
+            logger.error('Could not create submission processing job for {}'.format(submission.get_id()))
         else:
             res['status'] = 'queued'
-            res['jobid'] = str(job.id)
-        return res
-
-    def getSubmissionStatus(self, jobid):
-        q = Queue(connection=self.qconn)
-        job = q.fetch_job(jobid)
-        res = {
-            'status': None,
-            'jobid': jobid
-        }
-        if job is None:
-            res['status'] = 'failed'
-            res['message'] = 'Submission job not found'
-        elif job.is_queued:
-            res['status'] = 'queued'
-        elif job.is_started:
-            res['status'] = 'started'
-        elif job.is_failed:
-            res['status'] = 'failed'
-            res['message'] = 'Submission job had failed'
-        elif job.is_finished:
-            repo_id = job.args[0]
-            submission = self.dconn.jsonget(self._hubkey, Path('.submissions["{}"]'.format(repo_id)))
-            res['status'] = submission['status']
-            if 'finished' == res['status']:
-                res['commit'] = submission['commit']
-                res['pull'] = submission['pull']
-                res['url'] = 'https://github.com/{}/pulls/{}'.format(os.environ['REDISMODULES_REPO'], submission['pull'])
-            else:
-                res['status'] = 'failed'
-                res['message'] = submission['error']
+            submission.status = res['status']
+            submission.job = job.id
 
         return res
 
-    def processModuleSubmission(self, repo_id):
-        logger.info('Processing submision for {}'.format(repo_id))
-        # TODO: refactor into RedisModule
-        # TODO: should this be broken to littler steps?
-        self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].status'.format(repo_id)), 'started')
-        submission = self.dconn.jsonget(self._hubkey, Path('.submissions["{}"]'.format(repo_id)))
-
-        # TODO: try to validate submission a litle more
-        try:
-            subrepo = self.gh.get_repo(repo_id)
-            description = subrepo.description or 'This module has an air of mystery about it' 
-        except UnknownObjectException:
-            self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].status'.format(repo_id)), 'failed')
-            self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].error'.format(repo_id)), 'Repository not found on Github')
-            return
-
-        # TODO: move this to using RedisModule class
-        mod = {
-            'name': repo_id.split('/')[1],
-            'license': None,
-            'repository': {
-                'type': 'github',
-                'id': repo_id,
-                'url': 'https://github.com/{}'.format(repo_id)
-            },
-            'documentation': None,
-            'description': description,
-            'authors': []
-        }
-
-        # Validate authors
-        # TODO: currenty only gh
-        authors = submission['details']['authors']
-        for author in authors:
-            try:
-                ghauthor = self.gh.get_user(author)
-            except UnknownObjectException:
-                self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].status'.format(repo_id)), 'failed')
-                self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].error'.format(repo_id)), 'Author {} not found on Github'.format(author))
-                return
-            mod['authors'].append({
-                'type': 'github',
-                'id': author,
-                'url': 'https://github.com/{}'.format(author)
-            })
-
-        # TODO: validate and try to bring the icon from url and/or file upload
-        if submission['details']['icon_url']:
-            mod['icon'] = submission['details']['icon_url']
-
-        # Submit to Github as a pull request
-        ghrepo = self.gh.get_repo(os.environ['REDISMODULES_REPO'])
-        ghdefault = ghrepo.get_branch(ghrepo.default_branch)
-
-        # Get the branch for the submission
-        try:
-            ghsubref = ghrepo.get_git_ref('heads/submissions/{}'.format(repo_id))
-        except UnknownObjectException:
-            ghsubref = None
-
-        # Create it if it doesn't exist
-        if not ghsubref or not ghsubref.ref:
-            ghsubref = ghrepo.create_git_ref('refs/heads/submissions/{}'.format(repo_id), ghdefault.commit.sha)
-
-        ghsub = ghrepo.get_branch('submissions/{}'.format(repo_id))
-        parent = ghrepo.get_git_commit(ghsub.commit.sha)
-
-        # Create a new tree from the existing reference
-        # TODO: add the icon if fetchable & suitable
-        currtree = ghrepo.get_git_tree(ghsub.commit.sha)
-        jsonfile = json.dumps(mod, indent=4, separators=(',', ': '))
-        elems = [
-            InputGitTreeElement('modules/{}.json'.format(submission['details']['name']), '100644', 'blob', content=jsonfile),
-        ]
-        tree = ghrepo.create_git_tree(elems, base_tree=currtree)
-
-        # Fetch the existing pull request, if it does
-        pr = None
-        for pull in ghrepo.get_pulls(head=ghsub.name):
-            # TODO: is it safe to assume 0 or 1?
-            pr = pull
-
-        # Commit the tree
-        if pr:
-            message = 'Updates submission'
-        else:
-            message = 'Initial submission of module {}'.format(repo_id)
-        commit = ghrepo.create_git_commit(message, tree, [parent])
-        self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].commit'.format(repo_id)), commit.sha)
-
-        # Update the submission's reference
-        # TODO: resolve why this isn't a fast forward
-        ghsubref.edit(commit.sha, force=True)
-
-        # Create a PR if it doesn't exist already
-        if not pr:
-            # Prepare the body of the pull request
-            body =  'This module has been submitted via the hub.\n\n'
-            body += '#Owner: @{}\n'.format(subrepo.owner.login)
-
-            if authors:
-                body += 'Authors:'
-                for author in mod['authors']:
-                    body += ' @{}'.format(author['id'])
-                body += '\n'
-
-            # The pull request is created against the master branch
-            prkw = {
-                'title': '[SUBMISSION] {}'.format(repo_id),
-                'body': body,
-                'head': ghsub.name,
-                'base': ghdefault.name,
+    def viewSubmissionStatus(self, repo_id):
+        submission = Submission(self.dconn, repo_id)
+        if submission.exists:
+            res = {
+                'id': submission.get_id(),
+                'status': submission.status,
+                'message': submission.message,
             }
-            pr = ghrepo.create_pull(**prkw)
+            if 'finished' == res['status']:
+                res['pull_number'] = submission.pull_number
+                res['pull_url'] = submission.pull_url
+            return res
 
-        self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].pull'.format(repo_id)), pr.number)
-        self.dconn.jsonset(self._hubkey, Path('.submissions["{}"].status'.format(repo_id)), 'finished')
+    def processSubmission(self, repo_id):
+        logger.info('Processing submision for {}'.format(repo_id))
+        submission = Submission(self.dconn, repo_id)
+        if submission.exists:
+            return submission.process(self.gh)
 
-        return pr.number
-
-    def getModules(self, query=None, sort=None):
+    def viewModules(self, query=None, sort=None):
         if not query:
             # Use a purely negative query to get all modules
             query = '-etaoinshrdlu'
@@ -398,12 +267,14 @@ class Hub(object):
                 q.sort_by('name')
 
         results = self.sconn.search(q)
-        p = self.dconn.pipeline()
         mods = []
+        fetch_duration = 0
+        # TODO: this should be pipelined
         for doc in results.docs:
-            m = RedisModule(self, doc.id)
-            mods.append(m.to_dict(pipeline=p))
-        res, fetch_duration = _durationms(p.execute)
+            m = RedisModule(self.dconn, self.sconn, self.autocomplete, doc.id)
+            res, duration = _durationms(m.to_dict)
+            mods.append(res)
+            fetch_duration += duration
 
         return {
             'results': results.total,
@@ -413,7 +284,7 @@ class Hub(object):
             'modules': mods,
         }
 
-    def getSearchSuggestions(self, prefix):
+    def viewSearchSuggestions(self, prefix):
         suggestions = self.autocomplete.get_suggestions(prefix)
         return [s.string for s in suggestions]
 
@@ -459,52 +330,246 @@ class GithubAuthor(Author):
         if idof:
             Author.__init__(self, idof, 'github', 'https://github.com/{}'.format(idof))
 
-class RedisModule(object):
-    _hub = None
-    docId = None
-    docKey = None
+class ReJSONObject(object):
+    _key = None
+    _conn = None
 
-    def __init__(self, hub, docId):
-        self._hub = hub
-        self.docId = docId
-        self.docKey = 'module:{}'.format(docId)
+    def __init__(self, conn, key):
+        object.__setattr__(self, '_conn', conn)
+        object.__setattr__(self, '_key', key)
 
+    def __getattr__(self, name):
+        path = Path(name)
+        if self._conn.jsontype(self._key, path):
+            return self._conn.jsonget(self._key, path)
+
+    def __setattr__(self, name, value):
+        return self._conn.jsonset(self._key, Path(name), value)
+
+    def __delattr__(self, name):
+        return self._conn.jsondel(self._key, Path(name))
+
+    @property
     def exists(self):
-        return self._hub.dconn.exists(self.docKey)
+        return self._conn.exists(self._key)
 
-    def to_dict(self, pipeline=None):
-        if pipeline:
-            return pipeline.jsonget(self.docKey)
+    def get_key(self):
+        return self._key
+
+    def to_dict(self):
+        if self.exists:
+            return self._conn.jsonget(self._key)
+
+class Submission(ReJSONObject):
+    _repo_id = None
+
+    def __init__(self, conn, repo_id):
+        object.__setattr__(self, '_repo_id', repo_id.lower())
+        ReJSONObject.__init__(self, conn, 'submission:{}'.format(self._repo_id))
+
+    def save(self, **kwargs):
+        submission = {
+            'created': _toepoch(datetime.utcnow()),
+            'id': self._repo_id,
+            'status': 'new',
+            'message': 'Pending processing',
+            'details': {
+                'name': self._repo_id.split('/')[1],
+                'repository': self._repo_id,
+            }
+        }
+        if 'authors' in kwargs:
+            submission['details']['authors'] = kwargs['authors']
+        if 'docs_url' in kwargs:
+            submission['details']['docs_url'] = kwargs['docs_url']
+        if 'icon_url' in kwargs:
+            submission['details']['icon_url'] = kwargs['icon_url']
+        if 'certification' in kwargs:
+            submission['certification'] = kwargs['certification']
+
+        return self._conn.jsonset(self._key, Path.rootPath(), submission)
+
+    def get_id(self):
+        return self._repo_id
+
+    def set_status(self, status, message):
+        self.status = status
+        self.message = message
+
+    def process(self, gh):
+        logger.info('Submission {} processing started'.format(self._repo_id))
+        # TODO: should this be broken to littler steps?
+        details = self.details
+
+        try:
+            # TODO: try to validate submission a litle more, e.g. README and LICENSE exist, other min reqs?
+            self.set_status('started', 'Fetching repository')
+            subrepo = gh.get_repo(self._repo_id)
+            description = subrepo.description or 'This module has an air of mystery about it' 
+        except UnknownObjectException:
+            self.set_status('failed', 'Repository not found on Github')
+            return
+
+        # TODO: move this to using RedisModule class as template
+        mod = {
+            'name': details['name'],
+            'license': None,
+            'repository': {
+                'type': 'github',
+                'id': details['repository'],
+                'url': 'https://github.com/{}'.format(details['repository'])
+            },
+            'documentation': self.docs_url,
+            'description': description,
+            'authors': []
+        }
+
+        # Validate authors
+        # TODO: currenty only gh
+        self.message = 'Validating authors'
+        if authors in details:
+            for author in details['authors']:
+                try:
+                    ghauthor = gh.get_user(author)
+                except UnknownObjectException:
+                    self.set_status('failed', 'Author {} not found on Github'.format(author))
+                    return
+                mod['authors'].append({
+                    'type': 'github',
+                    'id': author,
+                    'url': 'https://github.com/{}'.format(author)
+                })
+
+        # TODO: validate and try to bring the icon from url and/or file upload
+        if 'icon_url' in details and details['icon_url']:
+            mod['icon'] = details['icon_url']
+
+        # Submit to Github as a pull request
+        ghrepo = gh.get_repo(os.environ['REDISMODULES_REPO'])
+        ghdefault = ghrepo.get_branch(ghrepo.default_branch)
+
+        # Get the branch for the submission
+        try:
+            ghsubref = ghrepo.get_git_ref('heads/submissions/{}'.format(mod['name']))
+            self.message = 'Found existing submission reference'
+        except UnknownObjectException:
+            ghsubref = None
+
+        # Create it if it doesn't exist
+        if not ghsubref or not ghsubref.ref:
+            self.message = 'Creating a branch for submission'
+            ghsubref = ghrepo.create_git_ref('refs/heads/submissions/{}'.format(mod['name']), ghdefault.commit.sha)
+
+        self.message = 'Creating commit tree'
+        ghsub = ghrepo.get_branch('submissions/{}'.format(mod['name']))
+        parent = ghrepo.get_git_commit(ghsub.commit.sha)
+
+        # Create a new tree from the existing reference
+        # TODO: add the icon if fetchable & suitable
+        currtree = ghrepo.get_git_tree(ghsub.commit.sha)
+        jsonfile = json.dumps(mod, indent=4, separators=(',', ': '))
+        elems = [
+            InputGitTreeElement('modules/{}.json'.format(mod['name']), '100644', 'blob', content=jsonfile),
+        ]
+        tree = ghrepo.create_git_tree(elems, base_tree=currtree)
+
+        # Fetch the existing pull request, if it does
+        self.message = 'Checking existing pull requests'
+        pr = None
+        for p in ghrepo.get_pulls(head=ghsub.name):
+            # TODO: is it safe to assume 0 or 1?
+            pr = p
+
+        # Commit the tree
+        self.message = 'Creating commit'
+        if pr:
+            message = 'Updates submission'
         else:
-            return self._hub.dconn.jsonget(self.docKey)
+            message = 'Initial submission of module {}'.format(mod['name'])
+        commit = ghrepo.create_git_commit(message, tree, [parent])
+        self.commit = commit.sha
 
-    def load(self, mod):
-        self.__init__(self._hub, mod['name'])
+        # Update the submission's reference
+        # TODO: resolve why this isn't a fast forward
+        self.message = 'Updating branch reference'
+        ghsubref.edit(commit.sha, force=True)
+
+        # Create a PR if it doesn't exist already
+        if not pr:
+            self.message = 'Creating pull request'
+            # Prepare the body of the pull request
+            labels = [ 'submission' ]
+            certification = self.certification
+            body =  'This module has been submitted via the hub.\n\n'
+            body += 'Owner: @{}\n'.format(subrepo.owner.login)
+            if mod['authors']:
+                body += 'Authors:'
+                for author in mod['authors']:
+                    body += ' @{}'.format(author['id'])
+            if certification:
+                body += '\n\nThe submitter had asked for the module to be certified.'
+                labels.append('certification')
+
+            # The pull request is created against the master branch
+            prkw = {
+                'title': '[SUBMISSION] {}'.format(mod['name']),
+                'body': body,
+                'head': ghsub.name,
+                'base': ghdefault.name,
+            }
+            pr = ghrepo.create_pull(**prkw)
+
+            # Set up labels for the pull's issue
+            self.message = 'Setting labels'
+            issue = ghrepo.get_issue(pr.number)
+            issue.edit(labels=labels)
+
+        self.status = 'finished'
+        self.pull_number = pr.number
+        self.pull_url = pr.html_url
+        return pr.number
+
+class RedisModule(ReJSONObject):
+    _doc_id = None
+    _autocomplete = None
+    _sconn = None
+
+    def __init__(self, dconn, sconn, autocomplete, doc_id):
+        object.__setattr__(self, '_doc_id', doc_id.lower())
+        object.__setattr__(self, '_autocomplete', autocomplete)
+        object.__setattr__(self, '_sconn', sconn)
+        ReJSONObject.__init__(self, dconn, 'module:{}'.format(self._doc_id))
+
+    def get_id(self):
+        return self._doc_id
+
+    def save(self, mod):
         # Store the module
-        self._hub.dconn.jsonset(self.docKey, Path.rootPath(), mod)
+        self._conn.jsonset(self._key, Path.rootPath(), mod)
+
         # Index it
-        self._hub.sconn.add_document(self.docId, nosave=True,
+        self._sconn.add_document(self._doc_id, nosave=True,
             name=mod['name'],
             description=mod['description'], 
         )
+
         # Add the module's name and description to the suggestions engine
         text = '{} {}'.format(mod['name'], mod['description'])
         words = set(re.compile('\w+').findall(text))
         words = set(w.lower() for w in words)
         words = words.difference(stopwords)
-        self._hub.autocomplete.add_suggestions(*[Suggestion(w) for w in words])
+        self._autocomplete.add_suggestions(*[Suggestion(w) for w in words])
 
-    def updateStats(self):
+    def updateStats(self, gh):
         # github.enable_console_debug_logging()
-        mod = self._hub.dconn.jsonget(self.docKey, Path('name'), Path('description'), Path('repository'))
-        repo = mod['repository']
+        repo = self.repository
 
         if repo and \
             'type' in repo and repo['type'] == 'github' and \
             'id' in repo:
 
             logger.info('Fetching stats for {}'.format(repo['id']))
-            grepo = self._hub.gh.get_repo(repo['id'])
+            grepo = gh.get_repo(repo['id'])
             stats = {
                 'stargazers_count': grepo.stargazers_count,
                 'forks_count': grepo.forks_count,
@@ -517,11 +582,11 @@ class RedisModule(object):
                     'name': rel[0].tag_name,
                     'url': rel[0].url
                 }
-            except IndexError:
+            except IndexError:      # No releases
                 pass
 
-        self._hub.dconn.jsonset(self.docKey, Path('.stats'), stats)
-        self._hub.sconn.add_document(self.docId, nosave=True, replace=True, name=mod['name'], description=mod['description'], **stats)
+        self.stats = stats
+        self._sconn.add_document(self._doc_id, nosave=True, replace=True, name=self.name, description=self.description, **stats)
 
 """
 Exported Functions
@@ -531,8 +596,8 @@ def callRedisModuleUpateStats(docId):
     logger.info('Calling update stats for {}'.format(docId))
     hub = Hub()
     if hub.gh:
-        module = RedisModule(hub, docId)
-        module.updateStats()
+        module = RedisModule(hub.dconn, hub.sconn, hub.autocomplete, docId)
+        module.updateStats(hub.gh)
     else:
         logger.error('No Github access for updating stats {}'.format(docId))
 
@@ -544,10 +609,10 @@ def callLoadModulesFromRepo(name, path):
     else:
         logger.error('No Github access for loading {} {}'.format(name, path))
 
-def callProcessModuleSubmission(repoid):
+def callProcessSubmission(repoid):
     logger.info('Calling process module submission {}'.format(repoid))
     hub = Hub()
     if hub.gh:
-        hub.processModuleSubmission(repoid)
+        hub.processSubmission(repoid)
     else:
         logger.error('No Github access for processing submission {}'.format(repoid))

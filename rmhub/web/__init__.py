@@ -60,7 +60,7 @@ def handle_moar(topic):
 def handle_modules(page=0):
     # TODO: paging
     sort = request.cookies.get('sort')
-    return jsonify(hub.getModules(sort=sort))
+    return jsonify(hub.viewModules(sort=sort))
 
 
 @app.route('/search')
@@ -68,7 +68,7 @@ def handle_search():
     # TODO: santize/safeguard query
     query = request.args.get('q', '')
     sort = request.cookies.get('sort')
-    results = hub.getModules(query=query, sort=sort)
+    results = hub.viewModules(query=query, sort=sort)
     return jsonify(results)
 
 @app.route('/submit', methods=['GET', 'POST'])
@@ -78,44 +78,67 @@ def handle_submit():
         status = {
             'status': 'failed'
         }
-        r = request.form['repoid']
-        if r is None:
-            status['message'] = 'Repository ID is mandatory'
-            return status
-        else:
-            if len(r) > 255:
-                status['message'] = 'Repository ID is over 255 characters'
-                return status
-            m = re.search('^([a-z0-9._-]+)/([a-z0-9._-]+)$', r)
-            if not m:
-                status['message'] = 'Repository ID is not in the pattern of "name/repository"'
-                return status
+        kwargs = {}
 
-        a = request.form['authorid']
-        if len(a) > 255:
-            status['message'] = 'Author ID is over 255 characters'
+        # repo_id is mandatory, missing it will trigger a Bad Request
+        repo_id = request.form['repoid']
+        if len(repo_id) > 255:
+            status['message'] = 'Repository ID is over 255 characters'
+            return status
+        match = re.search('^([a-z0-9._-]+)/([a-z0-9._-]+)$', repo_id)
+        if not match:
+            status['message'] = 'Repository ID is not in the pattern of "name/repository"'
             return status
 
-        i = request.form['icon']
-        if i and not validators.url(i):
-            status['message'] = 'Icon is not a valid URL'
-            return status
+        arg = request.form.get('authorid')
+        arg = None if arg == '' else arg
+        if arg:
+            if len(arg) > 255:
+                status['message'] = 'Author ID is over 255 characters'
+                return status
+        authors = []
+        if arg and arg != '':
+            authors.append(arg)
+        kwargs['authors'] = authors
+
+        arg = request.form['icon']
+        arg = None if arg == '' else arg
+        if arg:
+            if not validators.url(arg):
+                status['message'] = 'Icon is not a valid URL'
+                return status
+            kwargs['icon_url'] = arg
+
+        arg = request.form['docs']
+        arg = None if arg == '' else arg
+        if arg:
+            if not validators.url(arg):
+                status['message'] = 'Documentation is not a valid URL'
+                return status
+            kwargs['docs_url'] = arg
+
+        kwargs['certification'] = (request.form.get('certification') == 'on')
 
         # TODO: add more types of repos/authors/icon upload
-        status = hub.submitModule(r, a, i)
+        status = hub.submitModule(repo_id, **kwargs)
         return jsonify(status)
     elif request.method == 'GET':
-        jobid = request.args['jobid']
-        status = hub.getSubmissionStatus(jobid)
-        return jsonify(status)
-
+        repo_id = request.args['id']
+        status = hub.viewSubmissionStatus(repo_id)
+        if status:
+            return jsonify(status)
+        else:
+            return 'Submission not found', 404
 
 @app.route('/sugget')
 @app.route('/sugget/')
 @app.route('/sugget/<string:query>')
 def handle_suggetions(query=None):
-    # TODO: Sanitize input
+    # TODO: sanitize query
     if query:
-        return jsonify(hub.getSearchSuggestions(query))
+        return jsonify(hub.viewSearchSuggestions(query))
     else:
         return jsonify([])
+
+if __name__ == '__main__':
+    app.run()

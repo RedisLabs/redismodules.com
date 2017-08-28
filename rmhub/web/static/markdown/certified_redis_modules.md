@@ -1,7 +1,11 @@
-Modules displaying the "Certified module" icon <span class="octicon octicon-verified module-certified" aria-hidden="true"></span> are certified by Redis Labs to be compatible both with the open source as well as the enterprise versions of Redis, [<span class="redisefont">redis<sup>e</sup></span>](https://redislabs.com/why-redis/redis-enterprise/).
+Modules displaying the "Certified module" icon <span class="octicon octicon-verified module-certified" aria-hidden="true"></span> are certified by Redis Labs to be compatible both with the open source as well as the enterprise versions of Redis.
 
-To have a module certified by Redis Labs make sure you check the _"Apply for certification"_ box while submitting it.
+To have a module certified by Redis Labs make sure you check the _"Apply for certification"_ box when submitting it.
 
-Some of the certified modules are also integrated with <span class="redisefont">redis<sup>e</sup></span>.
+Certification requirements:
 
-To have a certified module integrated, please click here <-- TBD.
+- Documentation
+- Tests
+- TBD
+
+Certification is currently free of charge. Redis Labs may refuse to certify a module .... TBD

@@ -143,7 +143,7 @@
 
 <!-- Hub intro text -->
 <div class="container">
-  <div class="row">
+  <div id="intro" class="row">
     <p>
       Redis Modules are add-ons to Redis which extend Redis to cover most of the popular use cases for any industry. They seamlessly plug into ​Redis, processed in-memory and provide Redis’ simplicity, super high performance, scalability and high availability.
     </p>
@@ -153,17 +153,18 @@
     <p>
       The Modules Hub is an <a target="_blank" href="https://github.com/RedisLabs/rmhub">open source project</a> that's 100%-powered with Redis and Redis Modules.
     </p>
-    <p>
-      <a href="#" data-toggle="modal" data-target="#modalUsingModules">
+    <p id="modals">
+      <a href="#" data-toggle="modal" data-target="#modalUsingRedisModules">
         <i class="octicon octicon-question" aria-hidden="true"></i> Using Redis Modules
       </a><br />
-      <a href="#" data-toggle="modal" data-target="#modalDevelopingModules">
+      <a href="#" data-toggle="modal" data-target="#modalDevelopingRedisModules">
         <i class="octicon octicon-question" aria-hidden="true"></i> Developing Redis Modules
       </a><br />
-      <a href="#" data-toggle="modal" data-target="#modalCertifiedModules">
+      <a href="#" data-toggle="modal" data-target="#modalCertifiedRedisModules">
         <i class="octicon octicon-question" aria-hidden="true"></i> Certified Redis Modules <span class="octicon octicon-verified module-certified" aria-hidden="true"></span>
       </a>  
     </p>
+
     <p class="text-center">
       <button type="button" class="btn btn-default btn-lg btn-submit" data-toggle="modal" data-target="#modalSubmit">
         Submit a module
@@ -172,29 +173,6 @@
   </div> <!-- row -->
 </div> <!-- container-fluid -->
 
-<!-- Using modules modal dialog -->
-<div class="modal fade" id="modalUsingModules" tabindex="-1" role="dialog" aria-labelledby="modalUsingRedisModulesLabel" data-remote="moar/Using%20Redis%20Modules">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-    </div>
-  </div>
-</div>
-
-<!-- Developing modules modal dialog -->
-<div class="modal fade" id="modalDevelopingModules" tabindex="-1" role="dialog" aria-labelledby="modalDevelopingRedisModulesLabel" data-remote="moar/Developing%20Redis%20Modules">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-    </div>
-  </div>
-</div>
-
-<!-- Certified modules modal dialog -->
-<div class="modal fade" id="modalCertifiedModules" tabindex="-1" role="dialog" aria-labelledby="modalCertifiedRedisModulesLabel" data-remote="moar/Certified%20Redis%20Modules">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-    </div>
-  </div>
-</div>
 
 <!-- Submit module modal dialog -->
 <div class="modal fade" id="modalSubmit" tabindex="-1" role="dialog" aria-labelledby="modalSubmitLabel" style="top: 60px;">
@@ -208,22 +186,37 @@
       <form id="formSubmitModule" method="post" role="form">
         <div class="modal-body">
           <div class="help-block">
-            By filling the form below and clicking the <strong>Submit</strong> button, you'll be creating a pull request in this website's repository.
+            By filling this form and clicking the <strong>Submit</strong> button, you'll be submitting a module to the hub. The submission is a pull request against this website's repository, so you'll be able to edit it afterwards.
           </div>
           <div class="form-group">
             <label for="modulerepo">Repository</label>
             <div class="input-group">
               <span class="input-group-addon" id="repo_addon">github.com/</span>
-              <input type="text" class="form-control" id="modulerepo" name="repoid" placeholder="owner/repository" aria-describedby="repo_addon" pattern="[a-z0-9._-]+/[a-z0-9._-]+" maxlength="255" required>
+              <input type="text" class="form-control" id="modulerepo" name="repoid" placeholder="owner/repository" aria-describedby="repo_addon" pattern="[a-z0-9._-]+/[a-z0-9._-]+" maxlength="255" required />
             </div>
-            <label for="moduleauthor">Author</label>
+          </div>
+          <div class="form-group">
+              <label for="moduleauthor">Author</label>
             <div class="input-group">
               <span class="input-group-addon" id="author_addon">github.com/</span>
-              <input type="text" class="form-control" id="moduleauthor" name="authorid" placeholder="" aria-describedby="author_addon" pattern="[a-z0-9._-]+" maxlength="255">
+              <input type="text" class="form-control" id="moduleauthor" name="authorid" placeholder="" aria-describedby="author_addon" pattern="[a-z0-9._-]+" maxlength="255" />
             </div>
             <span class="help-block"><small><em>Leave empty if the same as module</em></small></span>
+          </div>
+          <div class="form-group">              
             <label for="moduleicon">Icon</label>
-            <input type="url" class="form-control" id="moduleicon" name="icon" placeholder="http://acme.com/foobar.svg" maxlength="255">
+            <input type="url" class="form-control" id="moduleicon" name="icon" placeholder="https://github.com/owner/repository/icon.svg" maxlength="255" />
+          </div>
+          <div class="form-group">              
+              <label for="moduledocs">Documentation</label>
+              <input type="url" class="form-control" id="moduledocs" name="docs" placeholder="https://owner.github.io/repository" maxlength="255" />
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="modulecertification" name="certification" /> Apply for certification
+              </label>
+            </div>
           </div>
         </div>
         
@@ -232,7 +225,6 @@
             <div id="submitResult" class="submit-result">
               <div id="submitProgress" class="progress submit-progress" style="display: none;">
                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                  <span class="sr-only">Submitting module</span>
                 </div>
               </div>
             </div>
@@ -244,23 +236,6 @@
         </div> <!-- modal-footer -->
       </form>
       
-    </div>
-  </div>
-</div>
-
-<!-- Submit module result modal dialog -->
-<div class="modal fade" id="modalSubmitDone" tabindex="-1" role="dialog" aria-labelledby="modalSubmitDoneLabel" style="top: 60px;">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="modalSubmitDoneLabel">Module submitted</h4>
-      </div>
-      <div class="modal-body">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
     </div>
   </div>
 </div>
@@ -394,28 +369,10 @@
 </script> <!-- module-template -->
 
 <script type="text/javascript" charset="utf-8">
-  
+
   $( document ).ready( function() {
-    
-    // Load settings
-    var sort = CookieGet('sort', 'name');
-    var layout = CookieGet('layout', 'list');
-    
-    // Bindings
-    // Listen to clicks on the display layout button
-    $( "#btngrpLayout .btn" ).click(function(e) {
-      e.preventDefault();
-      setDisplayLayout($(this).attr('role'));
-    });
-    
-    // Listen to clicks on the sort button
-    $( ".btnoptSort" ).click( function(e) {
-      e.preventDefault();
-      setDisplaySort($(this).attr('role'));
-    });
-    
-    // Handle "Subit module" form submit event
-    $( "#formSubmitModule" ).on('submit', submitModule);
+
+    init();
     
     // Create the suggestions engine
     var searchSuggestions = new Bloodhound({
@@ -446,6 +403,10 @@
       }
     });
     
+    // Load settings
+    var sort = CookieGet('sort', 'name');
+    var layout = CookieGet('layout', 'list');
+
     // Finalize page setup
     setDisplayLayout(layout);
     setDisplaySort(sort);
