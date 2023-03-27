@@ -19,7 +19,7 @@ PyGithub==1.35
 PyJWT==1.5.2
 python-dateutil==2.6.1
 python-dotenv==0.6.5
-redis==2.10.5
+redis==4.5.3
 redisearch==0.6.3
 rejson==0.2.1
 rmtest==0.5.1
